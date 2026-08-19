@@ -4,7 +4,7 @@
 **Runtime host:** Windows 11 + WSL2 `nvidia-docker` distro, Docker 29.6.2
 **GPU:** RTX 5070 Ti Laptop, 12 GB VRAM, compute cap 12.0 (Blackwell / sm_120), driver 610.88
 **Stack:** `tabpfn==8.1.0`, `torch 2.11.0+cu128` (CUDA 12.8), base image `pytorch/pytorch:2.11.0-cuda12.8-cudnn9-runtime`
-**Components:** validator `1c39f31` → **`48bdfa7`** (merged); finetuner `4e1333f` → `ae54e0d` (D1/D2 GPU fixes) → `1c99dd4` (+ version-aware limits) → `b8721d9` (+ integration CI) → **`484d3b5`** (merged). `COMPONENTS.json` pins the merged commits `48bdfa7` / `484d3b5`.
+**Components:** validator `1c39f31` → `48bdfa7` (merged) → **`965bdb1`** (+ null-target metadata); finetuner `4e1333f` → `ae54e0d` (D1/D2 GPU fixes) → `1c99dd4` (+ version-aware limits) → `b8721d9` (+ integration CI) → `484d3b5` (merged) → **`7be2dd8`** (+ reload-check & provenance). `COMPONENTS.json` pins the current merged commits `965bdb1` / `7be2dd8`.
 
 > **Pin status.** The finetuner ([#2](https://github.com/kurtvalcorza/tabpfn-regressor-finetuner/pull/2))
 > and validator ([#2](https://github.com/kurtvalcorza/tabpfn-regressor-dataset-validator/pull/2))
@@ -94,7 +94,7 @@ The v3 weights are **non-commercial**; the license was accepted through the Hugg
 
 ## What remains
 
-D1/D2 are fixed and merged in finetuner PR #2 (D1/D2 at `ae54e0d`, merged as `484d3b5`); this repo's `COMPONENTS.json` pins the merged finetuner (`484d3b5`) and validator (`48bdfa7`) commits. Outstanding:
+D1/D2 are fixed and merged in finetuner PR #2 (D1/D2 at `ae54e0d`, merged as `484d3b5`); this repo's `COMPONENTS.json` now pins the round-2 finetuner (`7be2dd8`) and validator (`965bdb1`) commits, which add the in-runtime reload-check, verifiable base-model provenance, and null-target metadata on top of the GPU-acceptance fixes. Outstanding:
 
 1. **Gate 8 (DIMER serving E2E)** — wire the artifact into the DIMER PoC serving layer and issue a real inference request. Separate deferred gate, not a Phase 2 GPU-acceptance blocker.
 2. **Resource profile** — measured peak 3.0 GB (v2) / 4.1 GB (v3) on this smoke dataset; keep `DEPLOYMENT.md` resource guidance until measured on representative data.
