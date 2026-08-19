@@ -9,7 +9,7 @@
     "finetuner": {
       "repository": "kurtvalcorza/tabpfn-regressor-finetuner",
       "branch": "main",
-      "commit": "1c99dd4e8ac66a698c3a558cbd4c0f266ceaa65a"
+      "commit": "b8721d9ccbfb48409a1707d3f77ffb7ccd6986e4"
     }
   },
   "notes": "Pin immutable component commits for deployment review. Update only after component CI/review passes."
