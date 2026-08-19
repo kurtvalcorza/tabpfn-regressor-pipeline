@@ -4,19 +4,14 @@
 **Runtime host:** Windows 11 + WSL2 `nvidia-docker` distro, Docker 29.6.2
 **GPU:** RTX 5070 Ti Laptop, 12 GB VRAM, compute cap 12.0 (Blackwell / sm_120), driver 610.88
 **Stack:** `tabpfn==8.1.0`, `torch 2.11.0+cu128` (CUDA 12.8), base image `pytorch/pytorch:2.11.0-cuda12.8-cudnn9-runtime`
-**Components:** validator `1c39f31` → **`78b3159`**; finetuner `4e1333f` → **`ae54e0d`** (D1/D2 GPU fixes) → `1c99dd4` (+ version-aware limits) → **`b8721d9`** (+ integration CI). `COMPONENTS.json` pins the branch tips `78b3159` / `b8721d9`.
+**Components:** validator `1c39f31` → **`48bdfa7`** (merged); finetuner `4e1333f` → `ae54e0d` (D1/D2 GPU fixes) → `1c99dd4` (+ version-aware limits) → `b8721d9` (+ integration CI) → **`484d3b5`** (merged). `COMPONENTS.json` pins the merged commits `48bdfa7` / `484d3b5`.
 
-> **Pin status (pre-merge).** Both component changes are in open PRs:
-> finetuner [#2](https://github.com/kurtvalcorza/tabpfn-regressor-finetuner/pull/2)
-> (tip `b8721d9`) and validator
-> [#2](https://github.com/kurtvalcorza/tabpfn-regressor-dataset-validator/pull/2)
-> (tip `78b3159`). `COMPONENTS.json` pins those branch tips. If either PR is
-> **squash-merged**, its branch SHA will not be on `main`; bump the corresponding
-> pin to the squash-merge commit before merging this pipeline PR.
->
-> This report covers the **GPU acceptance** gates (D1/D2, commit `ae54e0d`). The
-> finetuner/validator PRs also carry **version-aware capacity limits** (review
-> finding 3); see the note at the end.
+> **Pin status.** The finetuner ([#2](https://github.com/kurtvalcorza/tabpfn-regressor-finetuner/pull/2))
+> and validator ([#2](https://github.com/kurtvalcorza/tabpfn-regressor-dataset-validator/pull/2))
+> PRs were squash-merged on 2026-08-19; `COMPONENTS.json` pins those merge
+> commits. The GPU-acceptance gates below correspond to the D1/D2 work (`ae54e0d`);
+> the merged components also carry **version-aware capacity limits** (finding 3)
+> and an integration CI tier (finding 5) — see the note at the end.
 
 ## Verdict
 
@@ -99,7 +94,7 @@ The v3 weights are **non-commercial**; the license was accepted through the Hugg
 
 ## What remains
 
-D1/D2 are fixed in finetuner PR #2 (D1/D2 at `ae54e0d`, branch tip `b8721d9`); this repo's `COMPONENTS.json` re-pins to the finetuner (`b8721d9`) and validator (`78b3159`) branch tips (bump to the merge SHAs if squash-merged — see the pin-status note above). Outstanding:
+D1/D2 are fixed and merged in finetuner PR #2 (D1/D2 at `ae54e0d`, merged as `484d3b5`); this repo's `COMPONENTS.json` pins the merged finetuner (`484d3b5`) and validator (`48bdfa7`) commits. Outstanding:
 
 1. **Gate 8 (DIMER serving E2E)** — wire the artifact into the DIMER PoC serving layer and issue a real inference request. Separate deferred gate, not a Phase 2 GPU-acceptance blocker.
 2. **Resource profile** — measured peak 3.0 GB (v2) / 4.1 GB (v3) on this smoke dataset; keep `DEPLOYMENT.md` resource guidance until measured on representative data.
