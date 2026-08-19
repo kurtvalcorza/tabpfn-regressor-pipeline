@@ -4,13 +4,19 @@
 **Runtime host:** Windows 11 + WSL2 `nvidia-docker` distro, Docker 29.6.2
 **GPU:** RTX 5070 Ti Laptop, 12 GB VRAM, compute cap 12.0 (Blackwell / sm_120), driver 610.88
 **Stack:** `tabpfn==8.1.0`, `torch 2.11.0+cu128` (CUDA 12.8), base image `pytorch/pytorch:2.11.0-cuda12.8-cudnn9-runtime`
-**Components:** validator `1c39f31` (unchanged); finetuner `4e1333f` → **`ae54e0d`** after the D1/D2 fixes.
+**Components:** validator `1c39f31` → **`78b3159`**; finetuner `4e1333f` → **`ae54e0d`** (D1/D2 GPU fixes) → **`1c99dd4`** (+ version-aware limits). `COMPONENTS.json` pins the branch tips `78b3159` / `1c99dd4`.
 
-> **Pin status (pre-merge).** The finetuner D1/D2 fixes are in **open PR
-> [tabpfn-regressor-finetuner#2](https://github.com/kurtvalcorza/tabpfn-regressor-finetuner/pull/2)**
-> at commit `ae54e0d`, which is what `COMPONENTS.json` currently pins. If that PR
-> is **squash-merged**, `ae54e0d` will not be on `main`; the finetuner pin must
-> then be bumped to the squash-merge commit before this pipeline PR is merged.
+> **Pin status (pre-merge).** Both component changes are in open PRs:
+> finetuner [#2](https://github.com/kurtvalcorza/tabpfn-regressor-finetuner/pull/2)
+> (tip `1c99dd4`) and validator
+> [#2](https://github.com/kurtvalcorza/tabpfn-regressor-dataset-validator/pull/2)
+> (tip `78b3159`). `COMPONENTS.json` pins those branch tips. If either PR is
+> **squash-merged**, its branch SHA will not be on `main`; bump the corresponding
+> pin to the squash-merge commit before merging this pipeline PR.
+>
+> This report covers the **GPU acceptance** gates (D1/D2, commit `ae54e0d`). The
+> finetuner/validator PRs also carry **version-aware capacity limits** (review
+> finding 3); see the note at the end.
 
 ## Verdict
 
@@ -93,12 +99,25 @@ The v3 weights are **non-commercial**; the license was accepted through the Hugg
 
 ## What remains
 
-D1/D2 are fixed in finetuner PR #2 (`ae54e0d`); this repo's `COMPONENTS.json` re-pins to it (bump to the merge SHA if the finetuner PR is squash-merged — see the pin-status note above). Outstanding:
+D1/D2 are fixed in finetuner PR #2 (D1/D2 at `ae54e0d`, branch tip `1c99dd4`); this repo's `COMPONENTS.json` re-pins to the finetuner (`1c99dd4`) and validator (`78b3159`) branch tips (bump to the merge SHAs if squash-merged — see the pin-status note above). Outstanding:
 
 1. **Gate 8 (DIMER serving E2E)** — wire the artifact into the DIMER PoC serving layer and issue a real inference request. Separate deferred gate, not a Phase 2 GPU-acceptance blocker.
 2. **Resource profile** — measured peak 3.0 GB (v2) / 4.1 GB (v3) on this smoke dataset; keep `DEPLOYMENT.md` resource guidance until measured on representative data.
 3. **Minor** — `provenance.model.baseModelSha256` is `null` under `DIMER_TABPFN_MODEL_PATH` because `model_provenance` reads the estimator's resolved `RegressorModelSpecs` object rather than the configured checkpoint path; it could hash `config.model_path` directly.
 4. **v3 licensing for production** — the v3 weights remain **non-commercial**; DIMER production/external enablement requires a commercial license from Prior Labs regardless of this local eval.
+
+## Version-aware capacity limits (review finding 3)
+
+Carried by the pinned component PRs (separate from the GPU-acceptance gates above, but bundled in the same commits). The validator and trainer now read the selected `model_version` (pipeline passthrough) and enforce that generation's capacity instead of generic defaults — hard-capping features and subsampling rows to the version limit; unknown/`default` falls back to the strictest tier. Limits verified against tabpfn 8.1.0:
+
+| version | max_samples | max_features | max_classes | source |
+|---|---|---|---|---|
+| v2 | 10,000 | 500 | 10 | tabpfn source `_get_v2_config` |
+| v2.5 | 50,000 | 2,000 | 10 | tabpfn source `_get_v2_5_config` |
+| v2.6 | 100,000 | 2,000 | 10 | model card (checkpoint not bundled) |
+| v3 | 1,000,000 | 2,000 | 160 | v3 checkpoint `inference_config` |
+
+`max_classes` is unused for regression; it is retained so the table matches the classifier pipeline. Component unit tests: validator 9/9, finetuner 11/11.
 
 ## Reproducibility
 
