@@ -45,10 +45,12 @@ the runtime as `model_version` plus an optional pinned checkpoint (§3).
 DIMER's selected Base Model reaches the finetuner two ways:
 
 1. **Generation** via `model_version` (`v3` default, or `v2.6/v2.5/v2/default`).
-   `v2`/`v2.5` auto-download (Apache); `v2.6`/`v3` are gated non-commercial.
+   Only **v2** carries Prior Labs' Apache-derived license and auto-downloads
+   freely; **v2.5, v2.6, and v3** weights are **non-commercial**.
 2. **Pinned checkpoint** via `DIMER_TABPFN_MODEL_PATH` — an approved local
    checkpoint mounted into the container, loaded directly and hashed for
-   provenance. This is the required path for gated (`v3`) weights.
+   provenance. This is the required path for the non-commercial generations
+   (`v2.5`/`v2.6`/`v3`), whose weights must be supplied as an accepted checkpoint.
 
 Provenance is verifiable, not inferred from cache ordering: `provenance.model`
 records `tabpfnVersion`, `modelVersionRequested`, `modelPathRequested`,
@@ -112,8 +114,8 @@ Per `DEPLOYMENT.md`: production enablement requires a successful DIMER smoke
 validation + training run, exact model-generation/checkpoint provenance, a verified
 saved-artifact reload/inference (now enforced in-runtime via `reloadCheck` and in
 CI via the integration tier), and proof that manifest controls affect runtime
-behavior. Gated (`v3`) weights additionally require a commercial license for any
-non-evaluation use.
+behavior. The non-commercial generations (`v2.5`/`v2.6`/`v3`) additionally require
+a commercial license for any non-evaluation use.
 
 ## 8. Cross-repo synchronization
 
