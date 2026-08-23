@@ -57,13 +57,18 @@ Predictions are not clipped. In particular, the pipeline makes no non-negativity
 Successful training produces:
 
 ```text
-model.tabpfn_fit
-model.ckpt
-artifact_manifest.json
-result.json
+/data/fine-tuning/<run_id>/
+├── artifacts/
+│   ├── model.tabpfn_fit
+│   ├── model.ckpt
+│   └── artifact_manifest.json
+├── evaluation/report.json
+├── logs/run-summary.json
+├── progress/epoch_*.json    per-epoch telemetry (best-effort)
+└── result.json
 ```
 
-TabPFN's fitted-state archive intentionally omits foundation weights. `serving/load_artifact.py` rewrites the fitted state's recorded model path to the companion `model.ckpt` after DIMER relocates the artifact.
+TabPFN's fitted-state archive intentionally omits foundation weights. `serving/load_artifact.py` rewrites the fitted state's recorded model path to the companion `model.ckpt` after DIMER relocates the artifact. `result.json` declares `artifacts.modelArtifact` (path relative to `/data`) that `export-to-repository` resolves; in GPU-burst mode it points at the S3 model key the run uploaded instead.
 
 ## Smoke dataset
 

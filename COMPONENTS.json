@@ -4,12 +4,12 @@
     "validator": {
       "repository": "kurtvalcorza/tabpfn-regressor-dataset-validator",
       "branch": "main",
-      "commit": "dd0b6d32e0f51dd30c9d51bb5fbed4f258eb86cd"
+      "commit": "a4fb74837ee572596681764077ac05ec273a71de"
     },
     "finetuner": {
       "repository": "kurtvalcorza/tabpfn-regressor-finetuner",
       "branch": "main",
-      "commit": "39fbe3eca2be1930a296e2ef46017817a473ce27"
+      "commit": "34127c099ac485da1edaff251cf8aa2855005d1c"
     }
   },
   "notes": "Pin immutable component commits for deployment review. Update only after component CI/review passes."
