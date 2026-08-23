@@ -8,13 +8,13 @@
   "components": {
     "validator": {
       "repository": "kurtvalcorza/tabpfn-regressor-dataset-validator",
-      "commit": "691708efd19e2dd585b72fd83510b27f5939a0e2",
+      "commit": "1e62dc9f57917a2052827b6e39be2c54567acbee",
       "files": {
         "contract-snapshot.json": "9bd4855f37c6c24fdd92bf8996fe59a7e4f9cc90",
         "dimer-pipeline.json": "0b2019271176359f756d4bb19ed58df63aafc8da",
-        "dimer_contract_runtime.py": "1bf708d38ab51941707e440d9349bdabb4bc4ae9",
+        "dimer_contract_runtime.py": "1b9674ed5078df335f9ce17335059ea2a7bffcca",
         "dimer_model_contract.py": "c6090d614a56b40579020faa12b614f59dca6cc8",
-        "dimer_entrypoint.py": "dc8a509ff6dd1c75beffcc6ce161590e01e9e9a5"
+        "dimer_entrypoint.py": "aea47bf4c64d1ea0d1c79c03fc6b54c0d0963ed2"
       }
     },
     "finetuner": {
