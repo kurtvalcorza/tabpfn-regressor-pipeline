@@ -8,7 +8,7 @@
   "components": {
     "validator": {
       "repository": "kurtvalcorza/tabpfn-regressor-dataset-validator",
-      "commit": "5431e8beee4ef6d0ba59d017f3c158b5aa92152e",
+      "commit": "21234a66713d71995daf485b10709689cab8ed75",
       "files": {
         "contract-snapshot.json": "9bd4855f37c6c24fdd92bf8996fe59a7e4f9cc90",
         "dimer-pipeline.json": "0b2019271176359f756d4bb19ed58df63aafc8da",
@@ -18,7 +18,7 @@
     },
     "finetuner": {
       "repository": "kurtvalcorza/tabpfn-regressor-finetuner",
-      "commit": "60fd1cee58a688f733f9254d6a09c2402ead1309",
+      "commit": "27edf166c09ca2f31a4f4479cce02e012aad2301",
       "files": {
         "contract-snapshot.json": "9bd4855f37c6c24fdd92bf8996fe59a7e4f9cc90",
         "dimer-pipeline.json": "0b2019271176359f756d4bb19ed58df63aafc8da",
