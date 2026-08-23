@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "releasePinsChanged": false,
+  "note": "Immutable review candidates for contract conformance. COMPONENTS.json remains the release authority and must advance only after component CI/review passes.",
+  "components": {
+    "validator": {"repository": "kurtvalcorza/tabpfn-regressor-dataset-validator", "commit": "178d322708963704376b84096ba1e983858d824d", "contractBlobSha": "b0dcf9899ccf5ae0a5575bfdc9b396eccf36d958", "snapshot": "contract/components/validator.contract-v1.json"},
+    "finetuner": {"repository": "kurtvalcorza/tabpfn-regressor-finetuner", "commit": "7a7eee34138a420443f375ff6caf597569f1ee27", "contractBlobSha": "a874a0f66fa632f2ba2304d17a32584c00fe4e2b", "snapshot": "contract/components/finetuner.contract-v1.json"}
+  }
+}
