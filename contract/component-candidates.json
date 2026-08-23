@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "releasePinsAreSeparate": true,
+  "canonicalFiles": {
+    "contract-snapshot.json": "contract/runtime-snapshot.json",
+    "dimer-pipeline.json": "dimer-pipeline.json"
+  },
+  "components": {
+    "validator": {
+      "repository": "kurtvalcorza/tabpfn-regressor-dataset-validator",
+      "commit": "1e62dc9f57917a2052827b6e39be2c54567acbee",
+      "files": {
+        "contract-snapshot.json": "9bd4855f37c6c24fdd92bf8996fe59a7e4f9cc90",
+        "dimer-pipeline.json": "0b2019271176359f756d4bb19ed58df63aafc8da",
+        "dimer_contract_runtime.py": "1b9674ed5078df335f9ce17335059ea2a7bffcca",
+        "dimer_model_contract.py": "c6090d614a56b40579020faa12b614f59dca6cc8",
+        "dimer_entrypoint.py": "aea47bf4c64d1ea0d1c79c03fc6b54c0d0963ed2"
+      }
+    },
+    "finetuner": {
+      "repository": "kurtvalcorza/tabpfn-regressor-finetuner",
+      "commit": "355a986d7118476d3c5e70670594d3dd9b959a54",
+      "files": {
+        "contract-snapshot.json": "9bd4855f37c6c24fdd92bf8996fe59a7e4f9cc90",
+        "dimer-pipeline.json": "0b2019271176359f756d4bb19ed58df63aafc8da",
+        "dimer_contract_runtime.py": "54cd7cfccab6fa0c9ad16160c6f24b72421e0806",
+        "dimer_model_contract.py": "c6090d614a56b40579020faa12b614f59dca6cc8",
+        "dimer_entrypoint.py": "614f5e5236fa996e0247fb64490b18c54f610e93",
+        "dimer_burst_stage.py": "e4f83b57619f9705b510fffa4ea8e76d032b3998"
+      }
+    }
+  }
+}
