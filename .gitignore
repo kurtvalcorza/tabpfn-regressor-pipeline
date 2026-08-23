@@ -3,3 +3,5 @@ __pycache__/
 *.py[cod]
 .venv/
 .env
+# Local TabPFN base checkpoint — never committed; for the DIMER wizard upload or a local bake.
+weights/
