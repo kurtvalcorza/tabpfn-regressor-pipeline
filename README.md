@@ -32,7 +32,7 @@ See `TABULAR_REGRESSION_DATASET_SPEC.md`.
 
 ### Fine-tune
 
-`fine_tune=true` uses `FinetunedTabPFNRegressor` and updates TabPFN weights for the uploaded task. CUDA is required. A requested fine-tune fails clearly if CUDA is unavailable; it never silently changes semantics.
+`fine_tune=true` uses `FinetunedTabPFNRegressor` and updates TabPFN weights for the uploaded task; this needs a CUDA GPU. CPU is the default deployment (GPU is opt-in): when no CUDA device is present the run falls back to zero-shot ICL and records `metrics.fineTuneSkippedReason` (`metrics.fineTuneEffective=false`) rather than failing.
 
 ### Zero-shot / ICL
 

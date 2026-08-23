@@ -36,9 +36,9 @@ Review the package and exact model-weight terms before enabling a hosted service
 
 ## GPU requirement
 
-`fine_tune=true` is a hard CUDA path. If DIMER schedules the container without CUDA, the run fails with an explicit error. It does not downgrade to zero-shot.
+`fine_tune=true` uses a CUDA GPU. CPU is the default deployment: if DIMER schedules the container without CUDA, the run **falls back to zero-shot ICL** and records `metrics.fineTuneSkippedReason` (`metrics.fineTuneEffective=false`) — it does not fail. Provision a GPU profile when task-specific fine-tuning is actually required.
 
-`fine_tune=false` can be used for ICL-only operation and may be scheduled separately according to tested resource requirements.
+`fine_tune=false` runs ICL-only and may be scheduled separately according to tested resource requirements.
 
 ## Dataset resource limits
 
@@ -46,15 +46,19 @@ Both validator and trainer independently enforce archive/member/expansion/file-c
 
 ## Artifact contract
 
-Training output must preserve these files together:
+Training output, under `DIMER_OUTPUT_DIR` (`/data/fine-tuning/<run_id>/`):
 
 ```text
-model.tabpfn_fit
-model.ckpt
-artifact_manifest.json
+artifacts/model.tabpfn_fit
+artifacts/model.ckpt
+artifacts/artifact_manifest.json
+evaluation/report.json
+logs/run-summary.json
+progress/epoch_*.json
+result.json
 ```
 
-The `.tabpfn_fit` archive intentionally omits foundation weights. DIMER serving must use `serving/load_artifact.py`, or equivalent logic, so the restored estimator points to the relocated companion `model.ckpt`.
+The `.tabpfn_fit` archive intentionally omits foundation weights; `model.ckpt` sits beside it under `artifacts/`. DIMER serving must use `serving/load_artifact.py`, or equivalent logic, so the restored estimator points to the relocated companion `model.ckpt`. `result.json` declares `artifacts.modelArtifact` (path relative to `/data`) that `export-to-repository` resolves — see `CONTRACT.md`.
 
 ## Acceptance test
 

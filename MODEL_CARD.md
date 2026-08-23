@@ -12,13 +12,13 @@ This pipeline does **not** assume a non-negative response variable. Negative tar
 
 ## Fine-tuning
 
-Fine-tuning requires CUDA. The pipeline fails rather than silently changing to zero-shot inference when `fine_tune=true` and no usable CUDA device is present.
+Fine-tuning needs a CUDA GPU. CPU is the default deployment: when `fine_tune=true` and no usable CUDA device is present, the pipeline falls back to zero-shot ICL and records `metrics.fineTuneSkippedReason` (`metrics.fineTuneEffective=false`) rather than failing.
 
 The upstream TabPFN 8.1.0 fine-tuning wrapper currently uses MSE for regression early-stopping/evaluation inside the training loop. DIMER independently reports MAE, RMSE, R², and MAPE where defined.
 
 ## Artifacts and provenance
 
-Successful runs save a fitted estimator state plus a companion fine-tuned checkpoint. Both are SHA-256 hashed in `artifact_manifest.json`. Dataset bytes are also hashed for run provenance.
+Successful runs save (under `DIMER_OUTPUT_DIR/artifacts/`) a fitted estimator state (`model.tabpfn_fit`) plus its companion foundation checkpoint (`model.ckpt`, which the fitted archive omits). Both are SHA-256 hashed in `artifact_manifest.json`. Dataset bytes are also hashed for run provenance. `result.json` (alongside `evaluation/`, `logs/`, `progress/`) declares `artifacts.modelArtifact` for `export-to-repository`; see `CONTRACT.md`.
 
 For production reproducibility, provide a platform-managed base checkpoint through `DIMER_TABPFN_MODEL_PATH`; this allows the run to record a cryptographic hash of the exact starting checkpoint rather than relying on a mutable/default cache resolution.
 
