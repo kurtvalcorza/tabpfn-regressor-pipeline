@@ -219,9 +219,10 @@ the feature ceiling and row cap follow the selected generation, defaulting to th
 when the version is unknown. The default feature ceiling is **2,000** columns (a hard reject).
 `max_train_rows` is a **deterministic training cap** (not a TabPFN hard limit); if the train table
 exceeds it, the fine-tuner samples rows with the configured seed after the validation split is
-built. Archive guards reject path traversal, nested zips, suspicious compression ratios, oversized
-members, excessive file counts, and excessive total expansion. These limits are overridable by
-platform environment variables for an intentionally larger profile.
+built. Archive guards reject path traversal, suspicious compression ratios, oversized members,
+excessive file counts, and excessive total expansion; a single inner ZIP is transparently
+unwrapped and validated (only multiple top-level ZIPs are rejected). These limits are overridable
+by platform environment variables for an intentionally larger profile.
 
 ### Data licence governs the served model
 
@@ -308,7 +309,7 @@ A successful run materializes the DIMER artifact layout under the run's output d
     "logArtifact":         { "path": "fine-tuning/<run_id>/logs/run-summary.json",       "name": "run-summary.json",  "contentType": "application/json" },
     "manifest":            { "path": "fine-tuning/<run_id>/artifacts/artifact_manifest.json", "name": "artifact_manifest.json", "contentType": "application/json" },
     "fittedSha256": "…", "foundationCheckpointSha256": "…",
-    "reloadCheck": { "passed": true, "device": "cpu", "rows": 90 }
+    "reloadCheck": { "passed": true, "device": "cpu", "rows": 8 }
   },
   "provenance": { "model": { "tabpfnVersion": "8.1.0", "modelVersionRequested": "v3", "baseModelSha256": "…" },
                   "dataset": { "sha256": "…" }, "seed": 0 },

@@ -4,7 +4,7 @@
 
 A dataset is a directory or one top-level ZIP containing exactly one logical `train.csv` and optionally one logical `val.csv` and `test.csv`.
 
-Nested directories are allowed, but duplicate logical names are rejected. Archives containing path traversal, nested ZIPs, suspicious compression ratios, oversized members, excessive file counts, or excessive total expansion are rejected.
+Nested directories are allowed, but duplicate logical names are rejected. A single inner ZIP (an archive whose only content is one nested ZIP) is transparently unwrapped and its contents validated; only multiple top-level ZIPs are rejected. Archives containing path traversal, suspicious compression ratios, oversized members, excessive file counts, or excessive total expansion are rejected.
 
 ## Columns
 
