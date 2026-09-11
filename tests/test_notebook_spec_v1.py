@@ -25,7 +25,7 @@ def test_e2e_notebook_declares_and_exercises_release_profile():
     assert nb["metadata"]["dimer"] == {"notebook_profile": "E2E", "notebook_spec": "1.0"}
     assert "worker.run(" in source
     assert "COMPONENTS.json" in source and "!= pinned" in source
-    assert "load_dimer_tabpfn_artifact(" in source
+    assert "load_dimer_tabpfn_regressor_artifact(" in source
     assert "reproduces the recorded validation metric" in source
     assert "fineTuneSkippedReason" in source
     assert "does **not** establish" in source
@@ -37,7 +37,7 @@ def test_artifact_inference_is_external_and_never_self_produces():
     assert nb["metadata"]["dimer"] == {"notebook_profile": "ARTIFACT-INFERENCE", "notebook_spec": "1.0"}
     assert "produced **outside this execution**" in source
     assert "files.upload(" in source
-    assert "load_dimer_tabpfn_artifact(" in source
+    assert "load_dimer_tabpfn_regressor_artifact(" in source
     assert "worker.run(" not in source
     assert "build_synthetic_dataset" not in source
     assert ".fit(" not in source
