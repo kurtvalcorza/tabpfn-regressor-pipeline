@@ -1,0 +1,43 @@
+name: relay-doc-fix
+on:
+  push:
+    branches: [feat/model-card-spec-1.0]
+permissions:
+  contents: write
+jobs:
+  fix:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/model-card-spec-1.0
+          fetch-depth: 0
+      - name: Correct current TabPFN access-state guidance
+        shell: python
+        run: |
+          from pathlib import Path
+          p = Path('README.md')
+          text = p.read_text()
+          replacements = {
+              '**non-commercial** weights that are **Hugging Face-gated**; only the **v2** generation carries': '**non-commercial** weights that are currently downloadable without Hugging Face access gating; only the **v2** generation carries',
+              '| v3 (default) | 1,000,000 | 2,000 | 160 | non-commercial, HF-gated (`Prior-Labs/tabpfn_3`) |': '| v3 (default) | 1,000,000 | 2,000 | 160 | non-commercial; not access-gated (`Prior-Labs/tabpfn_3`) |',
+              '| Default generation | v3 (`Prior-Labs/tabpfn_3`, HF-gated, non-commercial) |': '| Default generation | v3 (`Prior-Labs/tabpfn_3`, not access-gated, non-commercial) |',
+              '- [TabPFN v3 model card and gated checkpoints](https://huggingface.co/Prior-Labs/tabpfn_3)\n  (`Prior-Labs/tabpfn_3`), Prior Labs, Hugging Face — non-commercial, gated.': '- [TabPFN v3 model card and checkpoints](https://huggingface.co/Prior-Labs/tabpfn_3)\n  (`Prior-Labs/tabpfn_3`), Prior Labs, Hugging Face — non-commercial; currently not access-gated.',
+          }
+          changed = 0
+          for old, new in replacements.items():
+              if old in text:
+                  text = text.replace(old, new)
+                  changed += 1
+          if changed != 4:
+              raise SystemExit(f'expected 4 targeted replacements, got {changed}')
+          p.write_text(text)
+      - name: Self-clean and push
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/relay-doc-fix.yml
+          git add README.md
+          git commit -m 'docs: correct TabPFN v3 access-state guidance'
+          git push origin HEAD:feat/model-card-spec-1.0
