@@ -7,7 +7,7 @@ table, fine-tunes TabPFN (or runs it as an in-context regressor), and produces a
 artifact plus holdout error metrics.
 
 TabPFN's licensing depends on the model generation. The default generation, **v3**, has
-**non-commercial** weights that are **Hugging Face-gated**; only the **v2** generation carries
+**non-commercial** weights that are currently downloadable without Hugging Face access gating; only the **v2** generation carries
 Prior Labs' Apache-derived licence and may be used commercially. A served pipeline is also bound
 by the licence of the data it was trained on. See
 [The model: TabPFN](#the-model-tabpfn) and [Data licence governs the served model](#data-licence-governs-the-served-model).
@@ -44,7 +44,7 @@ the validator and the fine-tuner (verified against `tabpfn==8.1.0`: v2/v2.5 from
 | v2 | 10,000 | 500 | 10 | Prior Labs Apache-derived (commercial OK) |
 | v2.5 | 50,000 | 2,000 | 10 | non-commercial |
 | v2.6 | 100,000 | 2,000 | 10 | non-commercial |
-| v3 (default) | 1,000,000 | 2,000 | 160 | non-commercial, HF-gated (`Prior-Labs/tabpfn_3`) |
+| v3 (default) | 1,000,000 | 2,000 | 160 | non-commercial; not access-gated (`Prior-Labs/tabpfn_3`) |
 
 \* `max_classes` is **unused for regression**; it is retained so this table matches the
 classifier pipeline. Features are a **hard reject** above the ceiling; rows are
@@ -417,7 +417,7 @@ production-enable until the end-to-end serving check in [DEPLOYMENT.md](DEPLOYME
 |---|---|
 | Base model | [TabPFN](https://huggingface.co/Prior-Labs/tabpfn_3) by Prior Labs |
 | Package | `tabpfn==8.1.0` |
-| Default generation | v3 (`Prior-Labs/tabpfn_3`, HF-gated, non-commercial) |
+| Default generation | v3 (`Prior-Labs/tabpfn_3`, not access-gated, non-commercial) |
 | Licence | v2: Prior Labs Apache-derived (commercial OK); v2.5 / v2.6 / v3: non-commercial |
 | Framework | `torch 2.11.0+cu128`; base image `pytorch/pytorch:2.11.0-cuda12.8-cudnn9-runtime` |
 | Provenance hook | mount a checkpoint via `DIMER_TABPFN_MODEL_PATH`; the run hashes it (`baseModelSha256`) |
@@ -445,8 +445,8 @@ in [`COMPONENTS.json`](COMPONENTS.json), this forms a chain from data to served 
 
 ## References
 
-- [TabPFN v3 model card and gated checkpoints](https://huggingface.co/Prior-Labs/tabpfn_3)
-  (`Prior-Labs/tabpfn_3`), Prior Labs, Hugging Face — non-commercial, gated.
+- [TabPFN v3 model card and checkpoints](https://huggingface.co/Prior-Labs/tabpfn_3)
+  (`Prior-Labs/tabpfn_3`), Prior Labs, Hugging Face — non-commercial; currently not access-gated.
 - [`tabpfn`](https://pypi.org/project/tabpfn/) package (pinned `8.1.0`), PyPI.
 - [Prior Labs](https://priorlabs.ai).
 - Pipeline contract and runbooks in this repository: [CONTRACT.md](CONTRACT.md),
