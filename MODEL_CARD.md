@@ -1,7 +1,7 @@
 ---
 license: other
 license_name: tabpfn-3-license-v1.0
-model_card_spec: "1.0"
+model_card_spec: "1.1"
 pipeline_tag: tabular-regression
 tags:
   - tabular-regression
@@ -9,12 +9,14 @@ tags:
   - in-context-learning
   - tabpfn
 base_model: Prior-Labs/tabpfn_3
+date_published: "2026-05-05"
+date_published_source: "Hugging Face Hub repository creation date of the exact hosted checkpoint (`createdAt`, https://huggingface.co/api/models/Prior-Labs/tabpfn_3)"
 ---
 
 # TabPFN-3 Regressor (tabpfn 8.1.0)
 
 
-###### Description
+#### Description
 
 TabPFN Regressor packages Prior Labs' TabPFN (Tabular Prior-data Fitted Network) through the `tabpfn==8.1.0` package, with the TabPFN-3 generation selected by default (`model_version: v3`) and v2, v2.5, and v2.6 selectable through DIMER configuration. TabPFN is a Transformer trained on a prior over synthetic tabular tasks so that it performs supervised regression in a single forward pass: the labelled training rows are the in-context support, the query rows attend to them, and the head emits a continuous estimate. Negative targets and predictions are valid; no non-negativity is assumed. The v3 checkpoint's stored inference config admits up to 1,000,000 samples and 2,000 features; the earlier generations are narrower.
 
