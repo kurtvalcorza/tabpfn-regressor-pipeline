@@ -1,0 +1,30 @@
+{
+  "format": "dimer_hf_snapshot",
+  "formatVersion": 1,
+  "modelKey": "tabpfn-3-regressor",
+  "modelId": "Prior-Labs/tabpfn_3",
+  "revision": "24a16a89d245878b846555110985634aa2e656d7",
+  "files": [
+    {
+      "path": "LICENSE",
+      "bytes": 16794,
+      "sha256": "dca491280b68f471312a15d54add7b8e724adf19fb0e113544b1ef91e060f5d5"
+    },
+    {
+      "path": "README.md",
+      "bytes": 8377,
+      "sha256": "53d61ea9bbf605c42892d13c53afb78e5ba8a6d1513d89db86736a620d3c9e81"
+    },
+    {
+      "path": "config.json",
+      "bytes": 33,
+      "sha256": "d9bc48f72a18bcbbb0a58dbe1ca7ac4123b9cfa1b7c0a79da5bcf3543cb32344"
+    },
+    {
+      "path": "tabpfn-v3-regressor-v3_default.ckpt",
+      "bytes": 233289807,
+      "sha256": "311ce18d97e9533d8585eaadafe040fbdd8070533209ed8696641dadc97a7301"
+    }
+  ],
+  "totalBytes": 233315011
+}
