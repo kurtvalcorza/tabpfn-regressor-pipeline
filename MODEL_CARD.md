@@ -3,6 +3,7 @@ license: other
 license_name: tabpfn-3-license-v1.0
 model_card_spec: "1.1"
 pipeline_tag: tabular-regression
+task: "Others - Tabular Regression"
 tags:
   - tabular-regression
   - tabular-foundation-model
