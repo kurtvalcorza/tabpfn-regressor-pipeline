@@ -51,7 +51,7 @@ This repository ships standalone Google Colab tutorials that exercise its public
 
 TabPFN Regressor packages Prior Labs' TabPFN (Tabular Prior-data Fitted Network) through the `tabpfn==8.1.0` package, with the TabPFN-3 generation selected by default (`model_version: v3`) and v2, v2.5, and v2.6 selectable through configuration. TabPFN is a Transformer trained on a prior over synthetic tabular tasks so that it performs supervised regression in a single forward pass: the labelled training rows are the in-context support, the query rows attend to them, and the head emits a continuous estimate. Negative targets and predictions are valid; no non-negativity is assumed. The v3 checkpoint's stored inference config admits up to 1,000,000 samples and 2,000 features; the earlier generations are narrower.
 
-At inference the model conditions on the operator's training table; adaptation happens through in-context conditioning by default and, when `fine_tune=true` and a CUDA GPU is present, through gradient fine-tuning with Prior Labs' `FinetunedTabPFNRegressor` on explicit train and validation sets, whose internal early stopping uses MSE. What this repository adds is the DIMER composition: the pipeline contract (`dimer-pipeline.json`, `CONTRACT.md`), the component manifest pinning the validator and fine-tuner commits (`COMPONENTS.json`), an artifact loader for serving (`serving/load_artifact.py`), tests, and a synthetic example builder. The upstream weights are not modified by this repository.
+At inference the model conditions on the operator's training table; adaptation happens through in-context conditioning by default and, when `fine_tune=true` and a CUDA GPU is present, through gradient fine-tuning with Prior Labs' `FinetunedTabPFNRegressor` on explicit train and validation sets, whose internal early stopping uses MSE. What this repository adds is the code around the weights: the pipeline contract (`dimer-pipeline.json`, `CONTRACT.md`), the component manifest pinning the validator and fine-tuner commits (`COMPONENTS.json`), an artifact loader for serving (`serving/load_artifact.py`), tests, and a synthetic example builder. The upstream weights are not modified by this repository.
 
 #### Intended Use and Limitations
 
@@ -61,7 +61,7 @@ The use cases below are the ones envisioned during development; the limits are t
 
 Supervised prediction of a finite numeric target from tabular data where each observation is one row of mixed numeric and categorical predictor columns. The pipeline takes a `train.csv` (optionally `val.csv`/`test.csv`) with a declared target column and produces a fitted TabPFN artifact pair (`model.tabpfn_fit` + `model.ckpt`), one point prediction per row, and holdout error metrics.
 
-Concrete application domains envisioned during development: demand and quantity estimation, price and cost estimation, continuous risk or score prediction, and scientific or engineering regression on feature tables of small to medium size, where the operator wants strong performance without hyperparameter search. The pipeline is meant to play the role of a strong zero-shot baseline, or a fine-tuned model when a GPU is available, inside DIMER. Enforced ceilings follow the selected generation (v3: 1,000,000 rows, 2,000 features; v2: 10,000 / 500), further capped by the DIMER `max_train_rows` preprocessing argument. A provided `test.csv` is used only for post-fit evaluation, never for early stopping or checkpoint selection.
+Concrete application domains envisioned during development: demand and quantity estimation, price and cost estimation, continuous risk or score prediction, and scientific or engineering regression on feature tables of small to medium size, where the operator wants strong performance without hyperparameter search. The pipeline is meant to play the role of a strong zero-shot baseline, or a fine-tuned model when a GPU is available. Enforced ceilings follow the selected generation (v3: 1,000,000 rows, 2,000 features; v2: 10,000 / 500), further capped by the `max_train_rows` preprocessing argument. A provided `test.csv` is used only for post-fit evaluation, never for early stopping or checkpoint selection.
 
 ###### Primary Intended Users
 
@@ -117,7 +117,7 @@ Any cutoff that turns a prediction into an action — a reorder point, a price b
 
 The pipeline's reported metrics come from a single validation split (a random holdout when `val.csv` is absent) and, when supplied, a single `test.csv`. No dispersion is reported alongside the point value: one split, one run, no confidence interval. Operators who need one should repeat the run across seeds or use cross-validation on their own side.
 
-Sources of run-to-run variability: the holdout split, the training cap, TabPFN's internal estimator ensembling (`n_estimators_finetune`, `n_estimators_validation`, `n_estimators_final_inference`, defaults 2/2/8), and gradient fine-tuning; all are driven by the DIMER `seed` hyperparameter, which `_seed_everything` propagates to Python, NumPy, and torch (including CUDA) and which is passed as `random_state` to the estimators. Non-deterministic CUDA kernels can still produce small differences. The pipeline emits no confidence output — no interval, no quantile, no predictive variance — so there is nothing to calibrate; a caller who needs an interval must estimate one from their own holdout residuals and should treat it as valid only within the training target range. A zero-shot fallback run and a fine-tuned run are different estimators and their metrics must not be compared as if from the same procedure — `fineTuneEffective` says which one ran.
+Sources of run-to-run variability: the holdout split, the training cap, TabPFN's internal estimator ensembling (`n_estimators_finetune`, `n_estimators_validation`, `n_estimators_final_inference`, defaults 2/2/8), and gradient fine-tuning; all are driven by the `seed` hyperparameter, which `_seed_everything` propagates to Python, NumPy, and torch (including CUDA) and which is passed as `random_state` to the estimators. Non-deterministic CUDA kernels can still produce small differences. The pipeline emits no confidence output — no interval, no quantile, no predictive variance — so there is nothing to calibrate; a caller who needs an interval must estimate one from their own holdout residuals and should treat it as valid only within the training target range. A zero-shot fallback run and a fine-tuned run are different estimators and their metrics must not be compared as if from the same procedure — `fineTuneEffective` says which one ran.
 
 #### Ethical considerations and biases
 
@@ -139,7 +139,7 @@ Where such a use is foreseeable — a triage classifier on a clinical feature ta
 
 Implemented in the fine-tuner and validator, each inspectable in the named code:
 
-- **Supply-chain integrity:** `tabpfn` is pinned to 8.1.0 and the component commits are pinned in `COMPONENTS.json`. The selected generation is explicit (`model_version`) and a mismatch between the DIMER-resolved and requested version raises `MODEL_IDENTITY_MISMATCH`. When an approved checkpoint is mounted through `DIMER_TABPFN_MODEL_PATH`, its SHA-256 is recorded and, if the model config carries `expectedSha256`, a mismatch raises `MODEL_INTEGRITY_FAILED`. Without a mounted checkpoint the package's cached weights are used and only their digest is recorded — that path is not pinned, and the card says so.
+- **Supply-chain integrity:** `tabpfn` is pinned to 8.1.0 and the component commits are pinned in `COMPONENTS.json`. The selected generation is explicit (`model_version`) and a mismatch between the resolved and requested version raises `MODEL_IDENTITY_MISMATCH`. When an approved checkpoint is mounted through `DIMER_TABPFN_MODEL_PATH`, its SHA-256 is recorded and, if the model config carries `expectedSha256`, a mismatch raises `MODEL_INTEGRITY_FAILED`. Without a mounted checkpoint the package's cached weights are used and only their digest is recorded — that path is not pinned, and the card says so.
 - **Input integrity:** the validator enforces the selected generation's row and feature caps and requires a finite numeric target; `test.csv` is isolated from fine-tuning, early stopping, and checkpoint selection.
 - **Statistical mitigations:** MAPE is computed only over non-zero rows with the row count recorded, so a zero-inflated target cannot produce an undefined or misleading relative error; evaluation prediction is chunked (`prediction_batch_rows`, default 4,096) to bound memory; predictions are scored raw so the reported error is the error a caller will see.
 - **Reproducibility:** `seed` propagates to Python, NumPy, torch, and the estimators; the artifact manifest records target column, ordered feature columns, and per-artifact SHA-256; the dataset fingerprint is recorded.
@@ -163,7 +163,7 @@ Distinct from the capability and decision boundaries listed under *Out-of-scope 
 - unlawful discrimination in employment, housing, credit, insurance, education, or healthcare access, including regression on a target that proxies a protected attribute (pay, premium, or limit set by group membership);
 - deceptive, manipulative, or predatory applications, including exploitative price discrimination and presenting a point estimate as a certified measurement;
 - clinical dosing, safety-margin, or legal-rights determinations without the validation and oversight described under *Human Life*;
-- any use outside the terms of the selected model weights — for TabPFN-3, `tabpfn-3-license-v1.0`, whose Non-Commercial Purpose excludes production deployment and revenue generation without a separate agreement — or of the DIMER deployment.
+- any use outside the terms of the selected model weights — for TabPFN-3, `tabpfn-3-license-v1.0`, whose Non-Commercial Purpose excludes production deployment and revenue generation without a separate agreement — or of the deployment that runs the pipeline.
 
 ---
 
@@ -181,7 +181,7 @@ This pipeline does **not** assume a non-negative response variable. Negative tar
 
 Fine-tuning needs a CUDA GPU. CPU is the default deployment: when `fine_tune=true` and no usable CUDA device is present, the pipeline falls back to zero-shot ICL and records `metrics.fineTuneSkippedReason` (`metrics.fineTuneEffective=false`) rather than failing.
 
-The upstream TabPFN 8.1.0 fine-tuning wrapper currently uses MSE for regression early-stopping/evaluation inside the training loop. DIMER independently reports MAE, RMSE, R², and MAPE where defined.
+The upstream TabPFN 8.1.0 fine-tuning wrapper currently uses MSE for regression early-stopping/evaluation inside the training loop. The pipeline independently reports MAE, RMSE, R², and MAPE where defined.
 
 ## Artifacts and provenance
 
@@ -211,7 +211,7 @@ Copyright © Prior Labs GmbH 2026.
 ```
 
 **Hosting & Usage Boundaries:**
-- **Permitted Use (Section 1.c, 2.a):** Model weights are hosted in the DIMER Model Repository for offline distribution, research, benchmarking, evaluation, experimentation, and public data science competitions.
+- **Permitted Use (Section 1.c, 2.a):** the licence permits offline distribution, research, benchmarking, evaluation, experimentation, and public data science competitions.
 - **Hosted Service Prohibition (Section 3.d):** Under Section 3.d (*No Hosted Service*), the TABPFN-3 Model or any Derivative may **not** be distributed, hosted, or made available as part of a hosted, managed, API, or SaaS service (whether paid or free) without a separate commercial license from Prior Labs GmbH (`sales@priorlabs.ai`).
 - **Output Restrictions (Section 2.d):** Model outputs are restricted to non-commercial purposes and may not be used in production systems, client deliverables, commercial research services, or to train, fine-tune, or distill any model competitive with TabPFN.
 - **Derivatives & Fine-Tuning (Section 3.c):** Any distribution of fine-tuned weights or derivatives produced by this pipeline must include an Attribution Notice stating that the model has been modified and disclaiming endorsement or approval by Prior Labs GmbH.
