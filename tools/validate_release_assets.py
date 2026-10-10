@@ -180,7 +180,9 @@ NOTEBOOKS = {
             "P.validate_new_rows(frame.assign(unexpected_column=0), features, target_column=target)",
             "report = P.evaluation_report(None, n_validation=0, target_column=fresh.target_column, sample_kind=rows_state[\"sample_kind\"])",
             "predictions_outside_training_range",
-            "NO_SAMPLE",
+            "fetched = fetch_sample(run, opts.get(\"sample\") or {})",
+            "Sample bundle verification failed before extraction",
+            "SAMPLE_URL_PREFIX = \"https://github.com/kurtvalcorza/tabpfn-regressor-pipeline/releases/download/\"",
             '"model_revision": P.MODEL_REVISION',
             '"model_license": P.MODEL_LICENSE',
         ),
@@ -299,10 +301,15 @@ ISOLATION_MARKERS = (
     "for name in ('PYTHONPATH', 'PYTHONHOME', 'PYTHONSTARTUP'",
     "def run_stage(stage, **options):",
 )
+ST1_PATTERN = re.compile(
+    r"\bgit\b[^\n]*\bclone\b|github\.com/kurtvalcorza(?!/tabpfn-regressor-pipeline/releases/download/(?:sample-bundle-v\d+/[A-Za-z0-9_.-]+\.zip)?['\"])"
+)
 # Patterns that must never appear in tutorial code (comment-stripped), in any kernel cell or the stage runner.
 FORBIDDEN_PATTERNS = (
     ("credential in clone URL", re.compile(r"https://[^/'\"\s]*@github\.com/|x-access-token:")),
-    ("repository clone (ST1)", re.compile(r"\bgit\b[^\n]*\bclone\b|github\.com/kurtvalcorza")),
+    # The one allowed repository URL is a release-asset download of this repository (the pinned sample bundle, SART6;
+    # REL3: a pinned, SHA-256-verified release asset is not a repository clone or source fetch).
+    ("repository clone (ST1)", ST1_PATTERN),
     ("mutable git dependency (MOD14)", re.compile(r"git\+https?://(?![^\n]*@[0-9a-f]{40}\b)")),
     ("editable self-install", re.compile(r"""['"](?:-e|--editable)['"]|pip install (?:-e|--editable)\b""")),
     ("mutable model reference (MOD14)", re.compile(r"revision\s*=\s*['\"](?:main|latest)['\"]")),

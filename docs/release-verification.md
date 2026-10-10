@@ -24,7 +24,7 @@ CI (`.github/workflows/ci.yml`, job `test`) runs `tools/validate_release_assets.
   restart instruction; the four Infrastructure cells are titled and collapsed; every learner cell runs a stage; the
   notebook byte-identical to `tools/build_notebook.py` output;
 - the stage-runner markers — E2E: validation before any split with coded findings, a non-numeric target refused as `TARGET_NOT_NUMERIC`, identifiers (`DROP_COLUMNS`) kept out of the features, numeric
-  columns with stray strings refused, the training-mean baseline, the MAPE floor and the linear-regression reference, the proposed RUN7 deviation recorded, `save_artifact` + recorded
+  columns with stray strings refused, the training-mean baseline, the MAPE floor and the linear-regression reference, the accepted RUN7 deviation recorded, `save_artifact` + recorded
   feature kinds, the fresh-process reload comparing predictions on every validation row (`rtol=1e-5`, `atol=1e-6`);
   companion: trusted ZIP / fitted digests, the member allowlist before extraction, `validate_artifact_bundle` with the
   checkpoint bound to the pinned one, `from_artifact`, `ID_COLUMNS`, the numeric-type check, a `not-measurable` report,
@@ -64,7 +64,8 @@ Before changing the registry status from `Candidate` to `Release-grade`:
 5. in a **second** clean runtime run the exact companion revision with `ARTIFACT_ZIP_PATH`, both digests, `NEW_DATA_PATH`
    and `ID_COLUMNS` set to the E2E exports, and verify the digest checks, the member allowlist, the checkpoint binding,
    the rebuild, the input manifest, the `not-measurable` report and the predictions; with all fields empty it must stop
-   in Section 4 naming `ARTIFACT_ZIP_PATH` until a pinned sample bundle is added with `tools/build_sample_bundle.py`;
+   only after downloading the pinned `sample-bundle-v1` release asset and verifying its size, SHA-256 and four members
+   before extraction (with the release unpublished it stops at that download, naming the troubleshooting row);
 6. record the notebook Git blob ids, commit, runtime (platform, Python, PyTorch, tabpfn, device), model identifier and
    immutable revision, whether the model cache was clean, `restarted: false`, outcome, metrics and outputs, and any
    warning or deviation in the table below;
@@ -83,7 +84,19 @@ download; they are measurements for the stated runtime, not general estimates.
 | Date (UTC) | Commit / notebook blob | Executor | Path exercised | Wall | Outcome |
 |---|---|---|---|---|---|
 | 2026-09-14 | `1130f16` / `32ef6f4a998a` | Kaggle CPU (`kurtvalcorza/dimer-nb2-tabpfn-regressor` v1) | Default sample path | 207.5 s | **PASSED** — 10/10 ok code cells executed cleanly, 10 files, 233 MB staged. Earlier blob (`build_notebook.py/2`, in-kernel install): restart status, package versions and metrics were not recorded; not evidence for the current blob |
-| | | | Artifact inference | | pending — no hosted run recorded; the default path needs the pinned sample bundle (TPRA-M1), not published yet |
+| | | | Artifact inference | | pending — no run recorded; its default path needs the `sample-bundle-v1` release asset, which is not yet published |
+
+### Local lock-only drives (not clean-runtime evidence)
+
+Code cells executed in order by nbclient with an ipykernel kernel on Linux x86_64 (WSL2), CPU only (`CUDA_VISIBLE_DEVICES=-1`),
+inside each notebook's own isolated hash-locked uv environment (CPython 3.12.12; torch 2.11.0, tabpfn 8.1.0, numpy 2.5.3,
+pandas 2.3.2, scikit-learn 1.9.0; 63 locked packages), default form values. The E2E drive fetched the checkpoint from the
+Hub at the pinned revision (`311ce18d…`); the companion drive reused that verified copy. No Colab.
+
+| Date (UTC) | Commit / notebook blob | Path exercised | Wall | Outcome |
+|---|---|---|---|---|
+| 2026-10-10 | `bb3426a` / `c85822daf78d` | E2E, default synthetic sample, `N_ESTIMATORS=4` | 1065.2 s (incl. environment build) | 11/11 code cells ok, `restarted`: no. Training-mean baseline; linear reference val MAE 0.2983 / RMSE 0.3665 / R² 0.9946, test 0.2661 / 0.3393 / 0.9943; TabPFN val 0.2938 / 0.3623 / 0.9948, test 0.2713 / 0.3438 / 0.9942; MAPE omitted (targets near zero). Fresh-boundary reload PASSED, max abs prediction difference 0.0 (rtol 1e-5, atol 1e-6). Its exports are the producer of `sample-bundle-v1` |
+| 2026-10-11 | working tree on `627b230` / `f2ed3aad43cc` | Artifact inference, default pinned sample (pre-seeded in the download cache; the release URL returned 404, so the download itself was not exercised), then the tamper activity | 35.8 s | 9/9 code cells ok, `restarted`: no. Sample verified before extraction (70,554 bytes, `139e87dd0300dfb3…`, reused download); predictions on the eight rows identical to the E2E run's; the tampered `model.tabpfn_fit` was refused before loading |
 
 ### History: previous (worker-driven, NOTEBOOK_SPEC 1.0) notebook pair
 
@@ -102,10 +115,18 @@ clean Colab record, are both still required before either notebook is marked rel
 | 2026-09-11 | `1e48a3469510` (clean tree); worker `34127c099ac4` | Local host `Kurt-Valcorza`, Windows-11-10.0.26200-SP0; Python 3.12.10; torch 2.11.0+cu128; tabpfn 8.1.0; GPU NVIDIA GeForce RTX 5070 Ti Laptop GPU; `MODEL_VERSION=v2`, default zero-shot | `scripts/execute_notebook_release.py --skip-bootstrap`: nbclient, one fresh kernel per notebook; `/content` → `D:/tabpfn-reg-run/content`; worker cloned from the local finetuner checkout at the pinned commit; `google.colab.files.upload()` served from explicit paths | **PASS** — E2E: `mode=zero-shot-icl`, `fineTuneEffective=false`, validation mae 0.2941 / rmse 0.3634 / r2 0.9947 vs trivial baseline; reload via serving loader reproduced the recorded validation metric within 1e-6. ARTIFACT-INFERENCE (second kernel, bundle + 8 fresh rows supplied externally): reconstructed and scored 8 rows. **Not a Google Colab run** — a Colab record is still required before either notebook is marked release-grade. |
 | 2026-09-11 | `b9ea9c69a728` (clean tree); worker `34127c099ac4` | Local host `Kurt-Valcorza`, Windows-11-10.0.26200-SP0; Python 3.12.10; torch 2.11.0+cu128; tabpfn 8.1.0; GPU NVIDIA GeForce RTX 5070 Ti Laptop GPU; `MODEL_VERSION=v2`, FINE_TUNE=True | `scripts/execute_notebook_release.py --skip-bootstrap --set FINE_TUNE=True`: nbclient, one fresh kernel per notebook; `/content` → `D:/tabpfn-reg-ft/content`; worker cloned from the local finetuner checkout at the pinned commit; `google.colab.files.upload()` served from explicit paths | **PASS** — E2E: `mode=fine-tune`, `fineTuneEffective=true`, validation mae 0.2978 / rmse 0.3661 / r2 0.9946 vs trivial baseline; reload via serving loader reproduced the recorded validation metric within 1e-6. ARTIFACT-INFERENCE (second kernel, bundle + 8 fresh rows supplied externally): reconstructed and scored 8 rows. **Not a Google Colab run** — a Colab record is still required before either notebook is marked release-grade. |
 
+### RUN7 deviation (accepted)
+
+The E2E notebook declares profile `E2E` with in-context conditioning (`fit` registers the support rows; no gradient
+update) as its adaptation. Not running the production pipeline's gradient fine-tuning (Prior Labs'
+`FinetunedTabPFNRegressor`, default on, large-GPU) is a RUN7 deviation, recorded in the notebook and its evaluation
+report (`adaptation_deviation`) and accepted by the maintainer on 2026-10-10 (review finding TPR-m1).
+
 ## Current status
 
 No clean-runtime execution of the current notebook blobs (`build_notebook.py/3.0-tabular`, isolated locked
-environment) has been recorded; the runs are **pending**. The only hosted run is the 2026-09-14 Kaggle CPU row above,
+environment) has been recorded; the runs are **pending**, and the companion's default path additionally needs the
+`sample-bundle-v1` release to be published. The only hosted run is the 2026-09-14 Kaggle CPU row above,
 for an earlier E2E blob with an in-kernel install; it staged the checkpoint but recorded no restart status, versions or
 metrics, so it does not carry to the current blobs. Static validation (`tools/validate_release_assets.py`), the generator parity checks, a `compile()` sweep
 over every code cell, and the offline unit suite passed on the tutorial source at the candidate revision, which is
@@ -114,5 +135,5 @@ the notebook blobs under review and an integrator promotes them; promotion is no
 reviewer should weigh: the pinned checkpoint `tabpfn-v3-regressor-v3_default.ckpt` was staged by the Kaggle run above (the manifest's digest
 comes from the Hub API); the module's `tabpfn` calls (`TabPFNRegressor(model_path=...)`, `save_fitted_tabpfn_model`,
 `load_fitted_tabpfn_model`) run against the real package only in the CI `integration` job (CPU fit, save, relocate,
-load, predict) and in offline probes, which are not clean-runtime evidence; the
+load, predict) and in the 2026-10-10/11 local lock-only drives above, which are not clean-runtime evidence; the
 standalone carrier was validated statically and by a CPU carrier probe (module cells + identity assertion, no fetch).

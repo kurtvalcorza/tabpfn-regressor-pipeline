@@ -1,0 +1,14 @@
+{
+  "url": "https://github.com/kurtvalcorza/tabpfn-regressor-pipeline/releases/download/sample-bundle-v1/tabpfn_regressor_sample_bundle.zip",
+  "tag": "sample-bundle-v1",
+  "bytes": 70554,
+  "sha256": "139e87dd0300dfb3a9a2aafdb976e4742e28d1943499883bf7f268dd3e7a2f2e",
+  "producer": {
+    "notebook": "tutorials/tabpfn_regressor_colab.ipynb",
+    "notebook_blob": "c85822daf78d331f0d2f64c0e161145a42f47295",
+    "commit": "bb3426aef266f8848ef13d60fa6f4ac181435524",
+    "runtime": "Linux x86_64 (WSL2), CPU only (CUDA_VISIBLE_DEVICES=-1), the notebook's own isolated hash-locked uv environment (tutorials/requirements-colab.lock.txt), code cells executed in order by nbclient with an ipykernel kernel, default form values (synthetic sample, N_ESTIMATORS=4)",
+    "run": "2026-10-10 local lock-only CPU run, 11/11 code cells, 1065.2 s including the environment build; fresh-boundary verification PASSED; not clean-runtime evidence",
+    "run_record": "notebook-review relay ledger fixes/cloud-tabpfn-regressor-pipeline/drive-e2e-2026-10-10.log"
+  }
+}
