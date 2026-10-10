@@ -1,0 +1,164 @@
+[colab] Parsing notebook '/home/kurt/colab-runs/tabpfn-regressor-pipeline-e2d5fab-05b13a/tabpfn_regressor_colab_e2d5fab_colab-cli-t4.ipynb'...
+[colab] Executing cell 1/11 - Infrastructure: check the runtime, accelerator and disk; create (or keep) the run directory...
+{'accelerator': 'Tesla T4, 15360 MiB', 'kernel_python': '3.13.15', 'run_directory': '/content/dimer_runs/tabpfn_regressor/44ca79c5bc26', 'outputs': '/content/outputs', 'weights': '/content/weights', 'environment_root': '/tmp/dimer_uv', 'free_gib': {'weights': 193.3, 'environment': 193.3}}
+[colab] Executing cell 2/11 - Infrastructure: write and verify the carried package, stage runner, lock, manifest and samples...
+{'carried_files': 7, 'verified': True, 'repository': 'kurtvalcorza/tabpfn-regressor-pipeline', 'revision': '7a59c5b235b6a0ea079d8b53977bbbf4176bac52', 'generator': 'build_notebook.py/3.0-tabular'}
+[colab] Executing cell 3/11 - Infrastructure: build (or reuse) the isolated locked environment and define the stage runner...
+{'notebook_source': '7a59c5b235b6a0ea079d8b53977bbbf4176bac52', 'python': '3.12.12', 'torch': '2.11.0', 'tabpfn': '8.1.0', 'numpy': '2.5.3', 'pandas': '2.3.2', 'scikit-learn': '1.9.0', 'cuda': True, 'locked_packages': 63, 'environment': '/tmp/dimer_uv/venv-445088f490907aed', 'environment_reused': False, 'setup_seconds': 55}
+[colab] Executing cell 4/11 - Infrastructure: stage and digest-verify the pinned checkpoint...
+Running stage 'weights' in the isolated environment; log: /content/dimer_runs/tabpfn_regressor/44ca79c5bc26/logs/weights.log
+{'model_id': 'Prior-Labs/tabpfn_3', 'revision': '24a16a89d245878b846555110985634aa2e656d7', 'license': 'tabpfn-3-license-v1.0', 'files': 4, 'total_bytes': 233315011}
+{'weights_dir': '/content/weights/tabpfn-3-regressor', 'fetched': ['LICENSE', 'README.md', 'config.json', 'tabpfn-v3-regressor-v3_default.ckpt']}
+{'verified_files': 4, 'revision': '24a16a89d245878b846555110985634aa2e656d7', 'checkpoint': 'tabpfn-v3-regressor-v3_default.ckpt', 'sha256': '311ce18d97e9533d8585eaadafe040fbdd8070533209ed8696641dadc97a7301'}
+[colab] Executing cell 5/11 - tabpfn_regressor-14...
+Running stage 'data' in the isolated environment; log: /content/dimer_runs/tabpfn_regressor/44ca79c5bc26/logs/data.log
+{'sample_kind': 'synthetic', 'type': 'deterministic synthetic tutorial sample', 'generator': 'build_synthetic_dataset', 'rows': {'train': 420, 'val': 90, 'test': 90}, 'features': 3, 'seed': 42, 'dataset_sha256': 'ea95322092a4b6d403e1c25d1730044abcc2e19ddab65e24190f0e7211f9a01a', 'target': 'target', 'drop_columns': [], 'text_columns': [], 'splits': 'explicit train/val/test from the dataset'}
+training target: {'count': 420.0, 'mean': -0.522, 'std': 4.579, 'min': -18.286, 'max': 13.076}
+[colab] Executing cell 6/11 - tabpfn_regressor-17...
+Running stage 'validate' in the isolated environment; log: /content/dimer_runs/tabpfn_regressor/44ca79c5bc26/logs/validate.log
+{'ceilings': {'MAX_TRAIN_ROWS': 1000000, 'MAX_FEATURES': 2000, 'MIN_TRAIN_ROWS': 10}, 'decision_rule': 'point-estimate', 'model_version': 'v3'}
+{
+  "id": "deterministic synthetic tutorial sample",
+  "mode": "in-context-fit",
+  "target_column": "target",
+  "numeric_features": 2,
+  "categorical_features": 1,
+  "target_stats": {
+    "mean": -0.522,
+    "std": 4.573,
+    "min": -18.286,
+    "max": 13.076
+  },
+  "splits": {
+    "train": {
+      "rows": 420,
+      "target": {
+        "mean": -0.522,
+        "std": 4.573,
+        "min": -18.286,
+        "max": 13.076
+      }
+    },
+    "val": {
+      "rows": 90,
+      "target": {
+        "mean": -0.723,
+        "std": 5.004,
+        "min": -11.25,
+        "max": 14.168
+      }
+    },
+    "test": {
+      "rows": 90,
+      "target": {
+        "mean": -0.87,
+        "std": 4.498,
+        "min": -8.823,
+        "max": 12.304
+      }
+    }
+  },
+  "drop_columns": []
+}
+findings: [
+  {
+    "input": "val.csv",
+    "verdict": "warning",
+    "code": "TARGET_OUT_OF_TRAINING_RANGE",
+    "message": "val.csv targets fall outside the training range; extrapolation is being scored",
+    "observed": {
+      "min": -11.2503712366,
+      "max": 14.1677000836
+    },
+    "explanation": "some evaluation targets lie outside the training targets' range, so those rows test extrapolation; on a random split of a small table a few such rows are expected"
+  },
+  {
+    "input": "renamed-target-probe",
+    "code": "TARGET_MISSING",
+    "verdict": "rejected",
+    "message": "train.csv: target column 'target' not present",
+    "observed": [
+      "x1",
+      "x2",
+      "category",
+      "label"
+    ]
+  }
+]
+training-mean baseline on val.csv {'trainMean': -0.5221, 'mae': 4.1348, 'rmse': 5.0076, 'r2': -0.0016, 'mape_omitted': 'some targets are within 5% of the training range of zero (min |y| = 0.0872); MAPE would be dominated by those rows'}
+[colab] Executing cell 7/11 - tabpfn_regressor-20...
+Running stage 'condition' in the isolated environment; log: /content/dimer_runs/tabpfn_regressor/44ca79c5bc26/logs/condition.log
+{
+  "mode": "zero-shot-icl (in-context conditioning, no gradient update)",
+  "device": "cuda",
+  "n_estimators": 4,
+  "seed": 42,
+  "validation": {
+    "mae": 0.2935,
+    "rmse": 0.3623,
+    "r2": 0.9948,
+    "mape_omitted": "some targets are within 5% of the training range of zero (min |y| = 0.0872); MAPE would be dominated by those rows"
+  },
+  "test": {
+    "mae": 0.2705,
+    "rmse": 0.3433,
+    "r2": 0.9942,
+    "mape_omitted": "some targets are within 5% of the training range of zero (min |y| = 0.00344); MAPE would be dominated by those rows"
+  }
+}
+Adaptation: in-context conditioning is this tutorial's adaptation; the production pipeline's gradient fine-tuning (Prior Labs' FinetunedTabPFNRegressor, default on, large-GPU) is not run here — the same fallback production uses without a large GPU. Proposed RUN7 deviation, pending maintainer approval.
+[colab] Executing cell 8/11 - tabpfn_regressor-23...
+Running stage 'report' in the isolated environment; log: /content/dimer_runs/tabpfn_regressor/44ca79c5bc26/logs/report.log
+{
+  "verdict": "sample-sanity",
+  "reason": "90 validation row(s) from one holdout; tutorial evidence, not a benchmark",
+  "decision_rule": "point-estimate",
+  "n_validation": 90,
+  "classical_reference": {
+    "id": "standardised_linear_regression",
+    "features": "numeric standardised, categoricals one-hot",
+    "validation": {
+      "mae": 0.2983,
+      "rmse": 0.3665,
+      "r2": 0.9946
+    },
+    "test": {
+      "mae": 0.2661,
+      "rmse": 0.3393,
+      "r2": 0.9943
+    }
+  },
+  "mape_omitted": "some targets are within 5% of the training range of zero (min |y| = 0.0872); MAPE would be dominated by those rows",
+  "interpretation": "90 validation rows; compare RMSE with the training target's standard deviation (4.58) and with the linear reference. A gap smaller than the split-to-split noise of one holdout is not evidence; no dispersion over splits was measured."
+}
+[colab] Executing cell 9/11 - tabpfn_regressor-26...
+Running stage 'export' in the isolated environment; log: /content/dimer_runs/tabpfn_regressor/44ca79c5bc26/logs/export.log
+{'artifact': ['artifact_manifest.json', 'model.ckpt', 'model.tabpfn_fit'], 'fittedEstimatorSha256': 'b54dd75c9f6d13365ddd39a8f4218a9aac57c8f9837863b33558348d5e28cf80', 'foundationCheckpointSha256': '311ce18d97e9533d8585eaadafe040fbdd8070533209ed8696641dadc97a7301', 'bundle_zip': 'tabpfn_regressor_artifact.zip', 'bundle_zip_sha256': 'a085de9fa4b55f3bcb2ba30cd73d2da592e39e5425c1b30bca524ebbd3a9a57f'}
+Trusted digests for the companion notebook: EXPECTED_ZIP_SHA256 = 'a085de9fa4b55f3bcb2ba30cd73d2da592e39e5425c1b30bca524ebbd3a9a57f', EXPECTED_FITTED_SHA256 = 'b54dd75c9f6d13365ddd39a8f4218a9aac57c8f9837863b33558348d5e28cf80'.
+Running stage 'reload' in the isolated environment; log: /content/dimer_runs/tabpfn_regressor/44ca79c5bc26/logs/reload.log
+{
+  "rows": 90,
+  "maxAbsPredictionDifference": 0.0,
+  "rtol": 1e-05,
+  "atol": 1e-06,
+  "recordedMae": 0.29353439,
+  "recordedModelPath": "/content/weights/tabpfn-3-regressor/tabpfn-v3-regressor-v3_default.ckpt",
+  "process": "fresh (separate from the exporting stage)"
+}
+Fresh-boundary verification PASSED: predictions equivalent on 90 validation rows (rtol=1e-05, atol=1e-06).
+[colab] Executing cell 10/11 - tabpfn_regressor-29...
+Running stage 'predict' in the isolated environment; log: /content/dimer_runs/tabpfn_regressor/44ca79c5bc26/logs/predict.log
+scored rows drawn from: first 8 rows of test.csv (held out from the in-context support), target removed
+Their unlabelled copy, with no identifier column(s), is outputs/tabpfn_regressor_new_rows.csv: the companion notebook's input.
+ row_id  prediction
+      0     -6.0040
+      1      6.4909
+      2     -0.9626
+      3      0.3327
+      4     -2.6360
+      5     -3.6069
+      6     -0.5196
+      7     -2.3961
+[colab] Executing cell 11/11 - tabpfn_regressor-32...
+Optional activity skipped: tick RUN_ACTIVITY to run it. The canonical outputs are complete.
+[colab] Saving notebook with outputs to '/home/kurt/colab-runs/tabpfn-regressor-pipeline-e2d5fab-05b13a/tabpfn_regressor_colab_e2d5fab_colab-cli-t4_output.ipynb'...
