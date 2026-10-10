@@ -521,3 +521,27 @@ def test_m1_zip_by_path_with_rows_by_upload_has_no_name_error(tmp_path, monkeypa
         exec(compile(artifact_cell, "<s4>", "exec"), ns)
         exec(compile(rows_cell, "<s6>", "exec"), ns)
         assert files.calls == 1 and calls[1][1]["source"] == "upload" and calls[1][1]["path"].endswith("inputs/rows.csv")
+
+
+# ---------------------------------------------------------------- fleet: stage processes and google.colab
+
+
+@pytest.mark.parametrize(
+    ("template_file", "notebook"),
+    [("notebook_template.py", E2E), ("notebook_template_artifact_inference.py", AI)],
+    ids=["E2E", "ARTIFACT-INFERENCE"],
+)
+def test_stage_processes_import_neither_ipython_nor_google_colab(template_file: str, notebook: Path) -> None:
+    """Stages run in the isolated environment, which has neither IPython nor google.colab: only kernel cells may use
+    them (the BYOD upload dialog). A carried module that imported either would fail on Colab; there is no worker and
+    no google.colab stub to give a ModuleSpec (tirex-forecasting-pipeline 9ee5922 / swin2sr-x4 34eac6c pattern)."""
+    build = _load(f"tpr_build_notebook_{notebook.stem}", TOOLS / "build_notebook.py")
+    template = _load(f"tpr_template_{notebook.stem}", TOOLS / template_file).TEMPLATE
+    carried = [ROOT / source for dest, source in build.carried_sources(ROOT, template).items() if dest.endswith(".py")]
+    assert any(path.name.startswith("tutorial_stages") for path in carried)
+    assert any(path.name == "pipeline.py" for path in carried)
+    pattern = re.compile(r"^\s*(from|import)\s+(IPython|google)\b", re.M)
+    offenders = [str(path) for path in carried if pattern.search(path.read_text(encoding="utf-8"))]
+    assert not offenders, offenders
+    text = notebook.read_text(encoding="utf-8")
+    assert "sys.modules['google" not in text and 'sys.modules[\\"google' not in text and "_WORKER_SOURCE" not in text

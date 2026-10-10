@@ -82,8 +82,8 @@ download; they are measurements for the stated runtime, not general estimates.
 
 | Date (UTC) | Commit / notebook blob | Executor | Path exercised | Wall | Outcome |
 |---|---|---|---|---|---|
-| 2026-09-14 | `1130f16` / `32ef6f4a998a` | Kaggle CPU (`kurtvalcorza/dimer-nb2-tabpfn-regressor` v1) | Default sample path | 207.5 s | **PASSED** — 10/10 ok code cells executed cleanly, 10 files, 233 MB staged |
-| | | | Artifact inference, bundle from the run above | | pending — queued to the executor lane |
+| 2026-09-14 | `1130f16` / `32ef6f4a998a` | Kaggle CPU (`kurtvalcorza/dimer-nb2-tabpfn-regressor` v1) | Default sample path | 207.5 s | **PASSED** — 10/10 ok code cells executed cleanly, 10 files, 233 MB staged. Earlier blob (`build_notebook.py/2`, in-kernel install): restart status, package versions and metrics were not recorded; not evidence for the current blob |
+| | | | Artifact inference | | pending — no hosted run recorded; the default path needs the pinned sample bundle (TPRA-M1), not published yet |
 
 ### History: previous (worker-driven, NOTEBOOK_SPEC 1.0) notebook pair
 
@@ -104,13 +104,15 @@ clean Colab record, are both still required before either notebook is marked rel
 
 ## Current status
 
-No clean-runtime execution of the standalone notebooks has been recorded yet; the runs are **pending** and queued to the
-executor lane. Static validation (`tools/validate_release_assets.py`), the generator parity checks, a `compile()` sweep
+No clean-runtime execution of the current notebook blobs (`build_notebook.py/3.0-tabular`, isolated locked
+environment) has been recorded; the runs are **pending**. The only hosted run is the 2026-09-14 Kaggle CPU row above,
+for an earlier E2E blob with an in-kernel install; it staged the checkpoint but recorded no restart status, versions or
+metrics, so it does not carry to the current blobs. Static validation (`tools/validate_release_assets.py`), the generator parity checks, a `compile()` sweep
 over every code cell, and the offline unit suite passed on the tutorial source at the candidate revision, which is
 necessary but not sufficient. The registry status remains **Candidate** until a reviewer confirms recorded runs against
 the notebook blobs under review and an integrator promotes them; promotion is not performed by the builder. Facts a
-reviewer should weigh: the pinned checkpoint `tabpfn-v3-regressor-v3_default.ckpt` has never been staged or loaded locally (the manifest's digest
-comes from the Hub API; `verify_snapshot` was exercised on the three small files only); the module's `tabpfn` calls
-(`TabPFNRegressor(model_path=...)`, `save_fitted_tabpfn_model`, `load_fitted_tabpfn_model`) were exercised only
-through injected fakes in the unit suite — the real-package path runs for the first time in the clean run; the
+reviewer should weigh: the pinned checkpoint `tabpfn-v3-regressor-v3_default.ckpt` was staged by the Kaggle run above (the manifest's digest
+comes from the Hub API); the module's `tabpfn` calls (`TabPFNRegressor(model_path=...)`, `save_fitted_tabpfn_model`,
+`load_fitted_tabpfn_model`) run against the real package only in the CI `integration` job (CPU fit, save, relocate,
+load, predict) and in offline probes, which are not clean-runtime evidence; the
 standalone carrier was validated statically and by a CPU carrier probe (module cells + identity assertion, no fetch).
