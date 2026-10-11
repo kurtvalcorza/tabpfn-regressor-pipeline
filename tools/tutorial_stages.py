@@ -40,7 +40,7 @@ NUMERIC_LIKE_SHARE = 0.9  # an object column whose values are >= 90 % numbers is
 RUN7_DEVIATION = (
     "in-context conditioning is this tutorial's adaptation; the production pipeline's gradient fine-tuning "
     "(Prior Labs' FinetunedTabPFNRegressor, default on, large-GPU) is not run here — the same fallback production "
-    "uses without a large GPU. Proposed RUN7 deviation, pending maintainer approval."
+    "uses without a large GPU. Accepted RUN7 deviation (accepted by the maintainer on 2026-10-10)."
 )
 
 
