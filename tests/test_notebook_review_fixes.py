@@ -235,10 +235,10 @@ def test_no_quality_assert_in_stage_runners(runner: str) -> None:
 
 
 def test_m1_profile_is_e2e_and_the_run7_deviation_is_recorded() -> None:
-    """TPR-m1: the notebook fits, evaluates, exports and reloads (E2E anatomy); not fine-tuning is a recorded, proposed RUN7 deviation."""
+    """TPR-m1: the notebook fits, evaluates, exports and reloads (E2E anatomy); not fine-tuning is a recorded, accepted RUN7 deviation."""
     assert _nb(E2E)["metadata"]["dimer"]["notebook_profile"] == "E2E"
     text = E2E.read_text(encoding="utf-8")
-    assert "proposed RUN7 deviation" in text and "pending the maintainer's approval" in text
+    assert "accepted RUN7 deviation" in text and "accepted by the maintainer on 2026-10-10" in text
     source = (TOOLS / "tutorial_stages.py").read_text(encoding="utf-8")
     assert 'report["adaptation_deviation"] = RUN7_DEVIATION' in source and "FinetunedTabPFNRegressor" in source
 

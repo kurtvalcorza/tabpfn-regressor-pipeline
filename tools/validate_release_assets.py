@@ -145,7 +145,7 @@ NOTEBOOKS = {
             "**no gradient update**",
             "**point estimates only**",
             "**Adaptation.**",
-            "proposed RUN7 deviation",
+            "accepted RUN7 deviation",
             "**Identifiers are not features.**",
             "`tabpfn-3-license-v1.0`",
             "training-mean baseline",
