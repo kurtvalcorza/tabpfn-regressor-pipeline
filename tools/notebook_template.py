@@ -87,7 +87,7 @@ TEMPLATE = {
         "**Adaptation.** The production DIMER pipeline can also fine-tune TabPFN by gradient descent (Prior Labs' "
         "`FinetunedTabPFNRegressor`, default on in `dimer-pipeline.json`, on a large GPU). This tutorial does not: "
         "in-context conditioning is its adaptation — the same path production falls back to without a large GPU. That is "
-        "a proposed RUN7 deviation, recorded in the evaluation report and pending the maintainer's approval. The TabPFN-3 "
+        "an accepted RUN7 deviation, recorded in the evaluation report and accepted by the maintainer on 2026-10-10. The TabPFN-3 "
         "weights are released under `tabpfn-3-license-v1.0`, whose Non-Commercial Purpose excludes production "
         "deployment, so this tutorial is testing-and-evaluation material. Sample metrics on synthetic data are tutorial "
         "sanity evidence only; predictions are **point estimates only**, with no prediction interval, and the pipeline "
@@ -323,7 +323,7 @@ TEMPLATE = {
                 "in its features plus noise of standard deviation 0.35, so the linear model already sits at the noise floor — no "
                 "model can beat it by more than chance on this table. `evaluation_report` is the package's public evaluation "
                 "stage: verdict `sample-sanity` (one holdout of one synthetic table, no dispersion estimate), the metric entries, "
-                "the baseline, the caveats, the MAPE rule and the proposed RUN7 deviation, written to "
+                "the baseline, the caveats, the MAPE rule and the accepted RUN7 deviation, written to "
                 "`outputs/{stem}_evaluation_report.json`.\n\n"
                 "**Predict before running:** if TabPFN's validation RMSE is 0.40 and the linear model's 0.37, what do you report?"
             ),
