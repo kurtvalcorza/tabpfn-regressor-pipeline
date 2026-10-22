@@ -116,4 +116,4 @@ Carried by the pinned component PRs (separate from the GPU-acceptance gates abov
 
 ## Reproducibility
 
-Harness scripts and the isolated run tree live under the session scratchpad and `/home/kurt/phase2/reg` in the `nvidia-docker` distro (dataset, negatives, `output-v2`, `output-v3`, `results`, `model-cache`). v3 base obtained under the owner's accepted HuggingFace gate for non-commercial use.
+Harness scripts and the isolated run tree live under the session scratchpad and `<local-run-dir>` in the `nvidia-docker` distro (dataset, negatives, `output-v2`, `output-v3`, `results`, `model-cache`). v3 base obtained under the owner's accepted HuggingFace gate for non-commercial use.
