@@ -110,6 +110,27 @@ download; they are measurements for the stated runtime, not general estimates.
 | 2026-10-10 | `e2d5fab` / `f2ed3aad43cc` of `tabpfn_regressor_artifact_inference_colab.ipynb`, downloaded from GitHub at the PR head and blob-verified before the session; executed file `docs/execution-evidence/2026-10-10/tabpfn_regressor_artifact_inference_colab_e2d5fab_colab-cli-t4.ipynb`, sha256 `4aab53f1ce557cd200c21b8a99ece69576e86e6a1f7be82d86fb5ba56938fe6d` (`…_run_summary.json` `13a2c45cadae…`, `…_exec.log` `20b946c7af7f…`) | Colab CLI 0.7.4 sequential execution, fresh Colab Tesla T4, via the workspace `colab-cli-serial-test-suite`; same 63-package isolated uv environment, built fresh. Not a browser Run all; order from the CLI log (1/9–9/9) | Artifact inference, default pinned sample: the `sample-bundle-v1` release asset was **downloaded for real** (fresh fetch, `reused_download` false) and verified before extraction; checkpoint fetched from the Hub and digest-verified | 102.3 s session wall | **PASSED — one pass, no restart, 0 errors, 9/9 code cells.** Release download exercised: `tabpfn_regressor_sample_bundle.zip` 70,554 bytes, SHA-256 `139e87dd0300dfb3a9a2aafdb976e4742e28d1943499883bf7f268dd3e7a2f2e` verified before extraction, sample files verified against `SAMPLE_BUNDLE.json`; reconstructed from the artifact on cuda (no refit, no network fallback for weights); extra-column probe refused (`SCHEMA_MISMATCH`); predictions on the eight rows identical to the E2E run's, 0 outside the training target range; report `not-measurable` (no labels). Carried provenance `627b230`. **The tamper activity was not exercised** (`RUN_ACTIVITY` off by default; cell 9 skipped), so the only refusal run was `SCHEMA_MISMATCH`. BYOD not exercised. Status stays **Candidate** |
 | 2026-09-14 | `1130f16` / `32ef6f4a998a` | Kaggle CPU (`kurtvalcorza/dimer-nb2-tabpfn-regressor` v1) | Default sample path | 207.5 s | **PASSED** — 10/10 ok code cells executed cleanly, 10 files, 233 MB staged. Earlier blob (`build_notebook.py/2`, in-kernel install): restart status, package versions and metrics were not recorded; not evidence for the current blob |
 
+**First hosted run of the migrated notebook (2026-10-22, `29de919` / blob `f3b96c9af59a`, Notebook Spec 3.0; the second pass of
+§32.2).** Colab CLI 0.7.4 `colab exec -f` on a fresh Colab Tesla T4, default path of `tutorials/tabpfn_regressor_colab.ipynb` on
+PR #24, started 2026-10-22T04:25:11Z, wall 143.7 s, exit 0, input unchanged; executed cell sources equal the blob (44 cells);
+verdict PASS. Evidence: `docs/execution-evidence/2026-10-22-29de919/`. The fresh-boundary reload passed (predictions equivalent
+on 90 validation rows). **Section 10 ran end to end on the default path with real tabpfn:** it downloaded the 217,007,493-byte
+release asset of tag `sample-artifact-synthetic-v1`, verified both pinned digests before deserialisation (ZIP
+`7542b7210c54d051c186675a2cc4782eb490c6ae1f098728876403be3838d388`, fitted estimator
+`7ae56895348d3a9d2381841020b3c5532c9ef730331df28274912370a9a78fd3`), rebuilt the regressor from the files alone and wrote
+`outputs/external_artifact/tabpfn_regressor_external_predictions.csv` and `..._external_result.json` (printed in the executed
+notebook; the files stayed on the released VM). This run's own export printed fitted-estimator SHA-256
+`ada0e54bec555938a2496b287f5e6739fa1e4df2e67a451ed3c7b56cc57ed8ec` and bundle ZIP `e5478535cfc0d1119a5aa52e747f3d3bdb6d304b51325a0dce00f1f38a5bd630`,
+confirming that the fitted file is not byte-reproducible across runs (disclosed above); the pin names one recorded run's export.
+Local paths were replaced by `<local-run-dir>/` before the first commit:
+
+| File (under `execution-evidence/2026-10-22-29de919/`) | Captured | Committed |
+|---|---|---|
+| `tabpfn_regressor_colab_29de919_colab-cli-t4.ipynb` | `aee07ff9f6b9912f9aab6c504fdedbfc4f6f040b8270dea6869673ea1e0a943c` | unchanged (no local path) |
+| `tabpfn_regressor_colab_29de919_colab-cli-t4_run_summary.json` | `62fad363e21c3e7d15ef573aba84b3ae62d4e5aa7bc8930fafe6b47fbc2e8a92` | unchanged (no local path) |
+| `tabpfn_regressor_colab_29de919_colab-cli-t4_exec.log` | `c6deeff7e458088cdc485dc21fd30bec01751275cfcbcca9793904ba428ceefa` | `578efebbac5309a79d91836ce8ae2fee9d2d57877674885897ce4aeb2bd0d9ae` |
+| `tabpfn_regressor_colab_29de919_colab-cli-t4_suite.log` | `cbfc619d9c6a44f1c62a78e956e320e14fa20c25e07c924548f10789d375b00d` | `18bf845fe60fa0331c4ab3620ae4a5a765cd27a7c2d9c5e534459e0908e6d099` |
+
 ### Local lock-only drives (not clean-runtime evidence)
 
 Code cells executed in order by nbclient with an ipykernel kernel on Linux x86_64 (WSL2), CPU only (`CUDA_VISIBLE_DEVICES=-1`),
