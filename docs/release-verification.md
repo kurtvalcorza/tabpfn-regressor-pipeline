@@ -25,7 +25,8 @@ stays valid because it names one recorded run's export (SART8, SART9), not an ex
 artifact is never uploaded over this asset (SART7): a re-pin publishes a new tag (`sample-artifact-synthetic-v2`) and
 updates the pin in the stage runner (SART11). The companion's rows below
 and the earlier notebook pair's records are kept as history (REL14); none of them is evidence for the migrated
-notebook, which needs its own hosted run (the second pass of §32.2) before promotion.
+notebook. Its own hosted run (the second pass of §32.2) is the `29de919` record under *Recorded executions*; what promotion
+still needs is under *Current status*.
 
 ## Automatic coverage (static, every pull request)
 
@@ -169,7 +170,13 @@ report (`adaptation_deviation`) and accepted by the maintainer on 2026-10-10 (re
 
 ## Current status
 
-**2026-10-22 — NOTEBOOK_SPEC 3.0 migration.** The companion is retired and folded into the E2E notebook's Section 10. The producing run of the pinned sample artifact (`b32aa7c`, first row of the clean-runtime table) is recorded; **no hosted run of the migrated notebook blob exists yet** — that is the second pass of §32.2, and it gates promotion. The rest of this section describes the pre-migration pair and is kept as history (REL14).
+**Current status (2026-10-22): Candidate.** The companion is retired and folded into the E2E notebook's Section 10. The current E2E notebook blob is `f3b96c9a` (`tutorials/tabpfn_regressor_colab.ipynb` at `29de919`, unchanged on `main` at `33b9563`). Its default path has one recorded hosted run of this blob: the `29de919` record (*First hosted run of the migrated notebook*, under *Recorded executions*; the second pass of §32.2), evidence in `execution-evidence/2026-10-22-29de919/`. It ran by Colab CLI `colab exec -f` (scripted, not a browser Run all) on a fresh Colab Tesla T4: exit 0, 14/14 code cells, 0 error outputs, 143.7 s, input unchanged, verdict PASS. In that run the fresh-boundary reload passed and Section 10 verified both pinned digests of the `sample-artifact-synthetic-v1` asset before deserialisation. The producing run of that asset (`b32aa7c`, first row of the clean-runtime table) is a run of the earlier blob `48100730`, not of this one. The notebook stays **Candidate** until these are recorded for this blob:
+
+- **REL12:** a BYOD run in which one representative input is accepted through the downstream stages and one incompatible input is refused;
+- **REL2:** a browser run of the interactive journeys (BYOD upload dialog, optional-activity toggle, own-artifact ZIP); the scripted CLI run counts for the default path only;
+- **Optional activity:** a run of the Section 11 ensemble-size activity (`RUN_ACTIVITY`); the `29de919` run printed "Optional activity skipped". The owner ruled on 2026-10-22 that it must be run before promotion.
+
+Promotion is an integrator decision; the builder does not change the status. The rest of this section describes the pre-migration pair and is kept as history (REL14).
 
 **2026-10-10 — one-pass hosted runs of both pre-migration blobs are recorded** (first two rows of the clean-runtime table): `tabpfn_regressor_colab.ipynb` (`c85822daf78d`) and `tabpfn_regressor_artifact_inference_colab.ipynb` (`f2ed3aad43cc`) at `e2d5fab`, each by Colab CLI 0.7.4 sequential execution on a fresh Colab Tesla T4 (not a browser Run all), no restart, 0 error outputs. Notes for the reviewer: (a) the E2E notebook's carried revision label reads `7a59c5b` (generation-time HEAD, not `e2d5fab`) — a provenance follow-up; (b) the tamper activity was not exercised (`RUN_ACTIVITY` off by default), only the `SCHEMA_MISMATCH` refusal ran; (c) the `sample-bundle-v1` release download was exercised for real (fresh fetch, SHA-256 verified before extraction); (d) the E2E notebook text still calls the RUN7 deviation "proposed, pending approval", although it was accepted on 2026-10-10 (see *RUN7 deviation (accepted)* above) — a follow-up for the next regeneration. Both notebooks stay **Candidate**; remaining gates: reviewer confirmation of these runs, the BYOD journeys, and the optional activities (including the tamper refusal on a hosted runtime).
 

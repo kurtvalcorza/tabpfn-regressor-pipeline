@@ -128,9 +128,11 @@ Static gates (also run by CI): `ruff check .`, `pytest -m "not integration"`, `p
 
 ## Release status
 
-**Candidate — tutorial source complete, awaiting clean-runtime execution** (`STATUS.md`). The standalone notebooks pass
-static validation and the generator parity checks; the clean-runtime run of the exact candidate revision is recorded —
-and gates promotion — in `docs/release-verification.md`.
+**Candidate — the current E2E blob `f3b96c9a` (commit `29de919`) has one recorded default-path run (Colab CLI scripted,
+fresh T4, 2026-10-22, PASS, 14/14 code cells); a BYOD run (one input accepted, one refused), a browser run of the
+interactive journeys and a run of the optional activity are still required before promotion** (`STATUS.md`). The
+standalone notebook passes static validation and the generator parity checks; its clean-runtime runs are recorded — and
+gate promotion — in `docs/release-verification.md`.
 
 ---
 
