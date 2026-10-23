@@ -132,7 +132,7 @@ Local paths were replaced by `<local-run-dir>/` before the first commit:
 | `tabpfn_regressor_colab_29de919_colab-cli-t4_exec.log` | `c6deeff7e458088cdc485dc21fd30bec01751275cfcbcca9793904ba428ceefa` | `578efebbac5309a79d91836ce8ae2fee9d2d57877674885897ce4aeb2bd0d9ae` |
 | `tabpfn_regressor_colab_29de919_colab-cli-t4_suite.log` | `cbfc619d9c6a44f1c62a78e956e320e14fa20c25e07c924548f10789d375b00d` | `18bf845fe60fa0331c4ab3620ae4a5a765cd27a7c2d9c5e534459e0908e6d099` |
 
-**Hosted default-path run of the current blob (2026-10-22, `51a9090` / blob `a28ab5420911`).** Colab CLI 0.7.5 `colab exec -f`
+**Hosted default-path run of blob `a28ab5420911` (2026-10-22, `51a9090`; the current blob until `daafb45`, now history).** Colab CLI 0.7.5 `colab exec -f`
 (a scripted run, not a browser Run all) on a fresh Colab Tesla T4, default path of `tutorials/tabpfn_regressor_colab.ipynb`
 at `51a9090`, executed as committed, started 2026-10-22T13:24:41Z, wall 244.8 s, exit 0, sequential, input unchanged, 14/14
 code cells, 0 errors, verdict PASS. Evidence: `docs/execution-evidence/2026-10-22-51a9090/`. Printed: validation MAE 0.2935 / RMSE 0.3623 /
@@ -147,7 +147,7 @@ first commit:
 | `tabpfn_regressor_colab_51a9090_colab-cli-t4_exec.log` | `8594246d7e9c4e69aaea727308183892fa8f88f9ccc94fc28c366e8922c84609` | `a4ccd3db65f3926a84abde2405fa588cba0ffe39f29f544703062430e944f15b` (2 replacements) |
 | `tabpfn_regressor_colab_51a9090_colab-cli-t4_run_summary.json` | `3214583cdf5e4473e31fed3e4ec52458f6d78c96aefbd03d386a78ba5f79fe27` | unchanged (no local path) |
 
-**Optional-activity run of the current blob (2026-10-22, `51a9090` / blob `a28ab5420911`, `RUN_ACTIVITY = True`).** A run copy of
+**Optional-activity run of blob `a28ab5420911` (2026-10-22, `51a9090`, `RUN_ACTIVITY = True`; the current blob until `daafb45`, now history).** A run copy of
 committed blob `a28ab542` with one override, `RUN_ACTIVITY = False` → `True` (run copy blob `ddbf719568c0`, SHA-256
 `17e623f031e8ec3ef947abfd81012305b3ccd592fe730dbaf6eb8a426eb1e79c`; it differs from the committed blob only in that assignment
 literal and is committed beside the evidence as `…_activity_run_copy.ipynb`), run by Colab CLI 0.7.5 `colab exec -f` (scripted,
@@ -163,6 +163,41 @@ were replaced by `<local-run-dir>` before the first commit:
 | `tabpfn_regressor_colab_51a9090_colab-cli-t4_activity_exec.log` | `b16d9d6708b5536c1610e36de5d17cffd0462ba74e8833aeee2f0597b58049b0` | `90c33365fef17ff4b44b846fdcd92d0684ed6a2feebf3d25c0b68b390b89e3cd` (2 replacements) |
 | `tabpfn_regressor_colab_51a9090_colab-cli-t4_activity_run_summary.json` | `6ae94de14893e71896f5a274a22dd4c9cb4c0f54cf0eded83f1667f7b79c4543` | unchanged (no local path) |
 | `tabpfn_regressor_colab_51a9090_colab-cli-t4_activity_run_copy.ipynb` | `17e623f031e8ec3ef947abfd81012305b3ccd592fe730dbaf6eb8a426eb1e79c` | unchanged (no local path) |
+
+**Hosted default-path run of blob `c6d534adcadf` (2026-10-23, `2e51561`; the current blob).** Colab CLI `colab exec -f`
+(a scripted run, not a browser Run all) on a fresh Colab Tesla T4, default path of `tutorials/tabpfn_regressor_colab.ipynb`
+at `2e51561`, executed as committed, started 2026-10-23T09:31:27Z, wall 160.7 s, exit 0, sequential, input unchanged, 14/14
+code cells, 0 errors, verdict PASS. Evidence: `docs/execution-evidence/2026-10-23-2e51561/`. Printed: TabPFN validation MAE
+0.2935 / RMSE 0.3623 / R² 0.9948, test MAE 0.2705 / RMSE 0.3433 / R² 0.9942; standardised linear reference validation
+0.2983 / 0.3665 / 0.9946, test 0.2661 / 0.3393 / 0.9943; "Fresh-boundary verification PASSED: predictions equivalent on 90
+validation rows (rtol=1e-05, atol=1e-06)"; Section 10 reported `trusted_digest: verified (pinned SAMPLE_ARTIFACT_SHA256 and
+SAMPLE_ARTIFACT_FITTED_SHA256)` for `7542b721…`; the activity cell printed "Optional activity skipped". The default path
+supplies no refused user input, so the new `Refused:` display was not exercised by this run. Local paths were replaced by
+`<local-run-dir>` before the first commit:
+
+| File (under `execution-evidence/2026-10-23-2e51561/`) | Captured | Committed |
+|---|---|---|
+| `tabpfn_regressor_colab_2e51561_colab-cli-t4.ipynb` | `c7ee0600e7de1e181cd4cc7d7a28bc0743840b216dc4743bd068a83fb877a17d` | unchanged (no local path) |
+| `tabpfn_regressor_colab_2e51561_colab-cli-t4_exec.log` | `830b34c51449301c540030c41f8bf845a4cfd6718a856b4129e803a03e3568f1` | `8767150d2b4bca7d216a8bd3ba81feead408d81917e4ff9532d3b7bd513a3af0` (2 replacements) |
+| `tabpfn_regressor_colab_2e51561_colab-cli-t4_run_summary.json` | `8b22cadee7fe5f203ce9f6e7bc1e6bf17143cff4c20aba2c2dd96a6cf1ed438b` | unchanged (no local path) |
+
+**Optional-activity run of blob `c6d534adcadf` (2026-10-23, `2e51561`, `RUN_ACTIVITY = True`; the current blob).** A run copy
+of committed blob `c6d534ad` with one override, `RUN_ACTIVITY = False` → `True` (run copy blob `3f44a3781230`, SHA-256
+`f0bfb56caa0fd33f8a5a5e75c2e390e022e910019c5ed93e731b303fc1466721`; it differs from the committed blob only in that assignment
+literal and is committed beside the evidence as `…_activity_run_copy.ipynb`), run by Colab CLI `colab exec -f` (scripted, not a
+browser Run all) on a fresh Colab Tesla T4, started 2026-10-23T09:34:22Z, wall 157.9 s, exit 0, sequential, input (the run copy)
+unchanged, 14/14 code cells, 0 errors, verdict PASS. Evidence: `docs/execution-evidence/2026-10-23-2e51561-activity/`. The
+canonical stages printed the same metrics as the default-path run above. The Section 11 activity (`n_estimators` 4 → 1) printed
+validation MAE 0.2935 → 0.2927, RMSE 0.3623 → 0.3638, R² 0.9948 → 0.9947 on 90 validation rows, `max_abs_prediction_change`
+0.0836, `mean_abs_prediction_change` 0.0263, and `{'canonical_outputs_unchanged': True}`. Local paths were replaced by
+`<local-run-dir>` before the first commit:
+
+| File (under `execution-evidence/2026-10-23-2e51561-activity/`) | Captured | Committed |
+|---|---|---|
+| `tabpfn_regressor_colab_2e51561_colab-cli-t4_activity.ipynb` | `e76f88a3a25aee7e07dbb46f86c9206ac89bc02a218221bc2dfca2f6b5f283e8` | unchanged (no local path) |
+| `tabpfn_regressor_colab_2e51561_colab-cli-t4_activity_exec.log` | `b8e8b150bffcf41d4d2c0170b77dfd864b23db614540971b210c30b591163baf` | `5bd57a862bc0af84b7f99ddf400f9604ea855c948d6b7d4d0a7e8931eceaf661` (2 replacements) |
+| `tabpfn_regressor_colab_2e51561_colab-cli-t4_activity_run_copy.ipynb` | `f0bfb56caa0fd33f8a5a5e75c2e390e022e910019c5ed93e731b303fc1466721` | unchanged (no local path) |
+| `tabpfn_regressor_colab_2e51561_colab-cli-t4_activity_run_summary.json` | `19b5c7a085de7796079b475f7409a6bd53135d6ce1bc215ea3c48331c8e49864` | unchanged (no local path) |
 
 ### Local lock-only drives (not clean-runtime evidence)
 
@@ -202,7 +237,7 @@ report (`adaptation_deviation`) and accepted by the maintainer on 2026-10-10 (re
 
 ## Current status
 
-**Current status (2026-10-22): Candidate.** The companion is retired and folded into the E2E notebook's Section 10. The current E2E notebook blob is `a28ab542` (`tutorials/tabpfn_regressor_colab.ipynb`, regenerated from template commit `c494879` on `docs/rel14-status`; a text-only change that drops the notebook's own run-status claims). Its default path is covered by the `51a9090` record (*Hosted default-path run of the current blob*, under *Recorded executions*), evidence in `execution-evidence/2026-10-22-51a9090/`. It ran by Colab CLI 0.7.5 `colab exec -f` (scripted, not a browser Run all) on a fresh Colab Tesla T4: exit 0, 14/14 code cells, 0 error outputs, 244.8 s, input unchanged, verdict PASS. In that run the fresh-boundary reload passed and Section 10 verified both pinned digests of the `sample-artifact-synthetic-v1` asset before deserialisation. The optional-activity gate (the owner's 2026-10-22 ruling that the Section 11 activity runs once on the current blob before promotion) is satisfied by the `51a9090` optional-activity record (`RUN_ACTIVITY = True` run copy, PASS, evidence in `execution-evidence/2026-10-22-51a9090-activity/`). The earlier `29de919` record covers the previous blob `f3b96c9a` and is history; the producing run of the pinned asset (`b32aa7c`, first row of the clean-runtime table) is a run of the earlier blob `48100730`. The notebook stays **Candidate** until these two are recorded for the current blob:
+**Current status (2026-10-23): Candidate.** The companion is retired and folded into the E2E notebook's Section 10. The current E2E notebook blob is `c6d534ad` (regenerated from code commit `daafb45` and recorded at commit `2e51561` on `fix/refusal-display`: a refused user input — the BYOD table, Section 9 rows, your own Section 10 artifact ZIP or rows — is shown as one `Refused: <file>: <reason>` line with no traceback, names the uploaded file rather than `train.csv`, and Run all stops at that cell; NOTEBOOK_SPEC 3.0 DAT19/DAT20). **Default path covered:** hosted Colab T4 run at `2e51561` on 2026-10-23 (PASS, 14/14 code cells, 0 errors). **Optional activity covered:** a `RUN_ACTIVITY = True` run copy of the same blob at `2e51561` on 2026-10-23 (PASS, 14/14 code cells, 0 errors). Both records are under *Recorded executions*. The `51a9090` default-path and optional-activity records cover the previous blob `a28ab542` and are history, as are the earlier records (REL14). The notebook stays **Candidate** pending only these two:
 
 - **REL12:** a BYOD run in which one representative input is accepted through the downstream stages and one incompatible input is refused;
 - **REL2:** a browser run of the interactive journeys (BYOD upload dialog, optional-activity toggle, own-artifact ZIP); the scripted CLI runs count for the default path and the activity only.
