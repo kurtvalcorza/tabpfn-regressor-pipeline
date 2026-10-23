@@ -1,663 +1,99 @@
-repo=tabpfn-regressor-pipeline tag=sample-artifact-synthetic-v1 asset=tabpfn_regressor_artifact.zip
+asset=tabpfn_regressor_artifact.zip
 sha256=7542b7210c54d051c186675a2cc4782eb490c6ae1f098728876403be3838d388
--- members
-1136 artifact_manifest.json
-68857 model.tabpfn_fit
-233289807 model.ckpt
--- nested zip: model.ckpt
-    73748 archive/data.pkl
-    1 archive/.format_version
-    2 archive/.storage_alignment
-    6 archive/byteorder
-    20004 archive/data/0
-    3072 archive/data/1
-    512 archive/data/2
-    512 archive/data/3
-    512 archive/data/4
-    65536 archive/data/5
-    256 archive/data/6
-    256 archive/data/7
-    32768 archive/data/8
-    512 archive/data/9
-    4096 archive/data/10
-    256 archive/data/11
-    4096 archive/data/12
-    64 archive/data/13
-    65536 archive/data/14
-    65536 archive/data/15
-    65536 archive/data/16
-    65536 archive/data/17
-    131072 archive/data/18
-    131072 archive/data/19
-    512 archive/data/20
-    512 archive/data/21
-    512 archive/data/22
-    65536 archive/data/23
-    65536 archive/data/24
-    65536 archive/data/25
-    65536 archive/data/26
-    131072 archive/data/27
-    131072 archive/data/28
-    512 archive/data/29
-    512 archive/data/30
-    512 archive/data/31
-    65536 archive/data/32
-    256 archive/data/33
-    256 archive/data/34
-    32768 archive/data/35
-    512 archive/data/36
-    4096 archive/data/37
-    256 archive/data/38
-    4096 archive/data/39
-    64 archive/data/40
-    65536 archive/data/41
-    65536 archive/data/42
-    65536 archive/data/43
-    65536 archive/data/44
-    131072 archive/data/45
-    131072 archive/data/46
-    512 archive/data/47
-    512 archive/data/48
-    512 archive/data/49
-    65536 archive/data/50
-    65536 archive/data/51
-    65536 archive/data/52
-    65536 archive/data/53
-    131072 archive/data/54
-    131072 archive/data/55
-    512 archive/data/56
-    512 archive/data/57
-    512 archive/data/58
-    65536 archive/data/59
-    256 archive/data/60
-    256 archive/data/61
-    32768 archive/data/62
-    512 archive/data/63
-    4096 archive/data/64
-    256 archive/data/65
-    4096 archive/data/66
-    64 archive/data/67
-    65536 archive/data/68
-    65536 archive/data/69
-    65536 archive/data/70
-    65536 archive/data/71
-    131072 archive/data/72
-    131072 archive/data/73
-    512 archive/data/74
-    512 archive/data/75
-    512 archive/data/76
-    65536 archive/data/77
-    65536 archive/data/78
-    65536 archive/data/79
-    65536 archive/data/80
-    131072 archive/data/81
-    131072 archive/data/82
-    512 archive/data/83
-    512 archive/data/84
-    512 archive/data/85
-    2048 archive/data/86
-    65536 archive/data/87
-    65536 archive/data/88
-    65536 archive/data/89
-    65536 archive/data/90
-    512 archive/data/91
-    512 archive/data/92
-    131072 archive/data/93
-    131072 archive/data/94
-    65536 archive/data/95
-    65536 archive/data/96
-    65536 archive/data/97
-    65536 archive/data/98
-    512 archive/data/99
-    512 archive/data/100
-    131072 archive/data/101
-    131072 archive/data/102
-    65536 archive/data/103
-    65536 archive/data/104
-    65536 archive/data/105
-    65536 archive/data/106
-    512 archive/data/107
-    512 archive/data/108
-    131072 archive/data/109
-    131072 archive/data/110
-    32 archive/data/111
-    512 archive/data/112
-    2048 archive/data/113
-    2048 archive/data/114
-    256 archive/data/115
-    256 archive/data/116
-    131072 archive/data/117
-    2048 archive/data/118
-    16384 archive/data/119
-    256 archive/data/120
-    16384 archive/data/121
-    256 archive/data/122
-    1048576 archive/data/123
-    1048576 archive/data/124
-    1048576 archive/data/125
-    1048576 archive/data/126
-    2048 archive/data/127
-    2048 archive/data/128
-    2097152 archive/data/129
-    2097152 archive/data/130
-    256 archive/data/131
-    256 archive/data/132
-    131072 archive/data/133
-    2048 archive/data/134
-    16384 archive/data/135
-    256 archive/data/136
-    16384 archive/data/137
-    256 archive/data/138
-    1048576 archive/data/139
-    1048576 archive/data/140
-    1048576 archive/data/141
-    1048576 archive/data/142
-    2048 archive/data/143
-    2048 archive/data/144
-    2097152 archive/data/145
-    2097152 archive/data/146
-    256 archive/data/147
-    256 archive/data/148
-    131072 archive/data/149
-    2048 archive/data/150
-    16384 archive/data/151
-    256 archive/data/152
-    16384 archive/data/153
-    256 archive/data/154
-    1048576 archive/data/155
-    1048576 archive/data/156
-    1048576 archive/data/157
-    1048576 archive/data/158
-    2048 archive/data/159
-    2048 archive/data/160
-    2097152 archive/data/161
-    2097152 archive/data/162
-    256 archive/data/163
-    256 archive/data/164
-    131072 archive/data/165
-    2048 archive/data/166
-    16384 archive/data/167
-    256 archive/data/168
-    16384 archive/data/169
-    256 archive/data/170
-    1048576 archive/data/171
-    1048576 archive/data/172
-    1048576 archive/data/173
-    1048576 archive/data/174
-    2048 archive/data/175
-    2048 archive/data/176
-    2097152 archive/data/177
-    2097152 archive/data/178
-    256 archive/data/179
-    256 archive/data/180
-    131072 archive/data/181
-    2048 archive/data/182
-    16384 archive/data/183
-    256 archive/data/184
-    16384 archive/data/185
-    256 archive/data/186
-    1048576 archive/data/187
-    1048576 archive/data/188
-    1048576 archive/data/189
-    1048576 archive/data/190
-    2048 archive/data/191
-    2048 archive/data/192
-    2097152 archive/data/193
-    2097152 archive/data/194
-    256 archive/data/195
-    256 archive/data/196
-    131072 archive/data/197
-    2048 archive/data/198
-    16384 archive/data/199
-    256 archive/data/200
-    16384 archive/data/201
-    256 archive/data/202
-    1048576 archive/data/203
-    1048576 archive/data/204
-    1048576 archive/data/205
-    1048576 archive/data/206
-    2048 archive/data/207
-    2048 archive/data/208
-    2097152 archive/data/209
-    2097152 archive/data/210
-    256 archive/data/211
-    256 archive/data/212
-    131072 archive/data/213
-    2048 archive/data/214
-    16384 archive/data/215
-    256 archive/data/216
-    16384 archive/data/217
-    256 archive/data/218
-    1048576 archive/data/219
-    1048576 archive/data/220
-    1048576 archive/data/221
-    1048576 archive/data/222
-    2048 archive/data/223
-    2048 archive/data/224
-    2097152 archive/data/225
-    2097152 archive/data/226
-    256 archive/data/227
-    256 archive/data/228
-    131072 archive/data/229
-    2048 archive/data/230
-    16384 archive/data/231
-    256 archive/data/232
-    16384 archive/data/233
-    256 archive/data/234
-    1048576 archive/data/235
-    1048576 archive/data/236
-    1048576 archive/data/237
-    1048576 archive/data/238
-    2048 archive/data/239
-    2048 archive/data/240
-    2097152 archive/data/241
-    2097152 archive/data/242
-    256 archive/data/243
-    256 archive/data/244
-    131072 archive/data/245
-    2048 archive/data/246
-    16384 archive/data/247
-    256 archive/data/248
-    16384 archive/data/249
-    256 archive/data/250
-    1048576 archive/data/251
-    1048576 archive/data/252
-    1048576 archive/data/253
-    1048576 archive/data/254
-    2048 archive/data/255
-    2048 archive/data/256
-    2097152 archive/data/257
-    2097152 archive/data/258
-    256 archive/data/259
-    256 archive/data/260
-    131072 archive/data/261
-    2048 archive/data/262
-    16384 archive/data/263
-    256 archive/data/264
-    16384 archive/data/265
-    256 archive/data/266
-    1048576 archive/data/267
-    1048576 archive/data/268
-    1048576 archive/data/269
-    1048576 archive/data/270
-    2048 archive/data/271
-    2048 archive/data/272
-    2097152 archive/data/273
-    2097152 archive/data/274
-    256 archive/data/275
-    256 archive/data/276
-    131072 archive/data/277
-    2048 archive/data/278
-    16384 archive/data/279
-    256 archive/data/280
-    16384 archive/data/281
-    256 archive/data/282
-    1048576 archive/data/283
-    1048576 archive/data/284
-    1048576 archive/data/285
-    1048576 archive/data/286
-    2048 archive/data/287
-    2048 archive/data/288
-    2097152 archive/data/289
-    2097152 archive/data/290
-    256 archive/data/291
-    256 archive/data/292
-    131072 archive/data/293
-    2048 archive/data/294
-    16384 archive/data/295
-    256 archive/data/296
-    16384 archive/data/297
-    256 archive/data/298
-    1048576 archive/data/299
-    1048576 archive/data/300
-    1048576 archive/data/301
-    1048576 archive/data/302
-    2048 archive/data/303
-    2048 archive/data/304
-    2097152 archive/data/305
-    2097152 archive/data/306
-    256 archive/data/307
-    256 archive/data/308
-    131072 archive/data/309
-    2048 archive/data/310
-    16384 archive/data/311
-    256 archive/data/312
-    16384 archive/data/313
-    256 archive/data/314
-    1048576 archive/data/315
-    1048576 archive/data/316
-    1048576 archive/data/317
-    1048576 archive/data/318
-    2048 archive/data/319
-    2048 archive/data/320
-    2097152 archive/data/321
-    2097152 archive/data/322
-    256 archive/data/323
-    256 archive/data/324
-    131072 archive/data/325
-    2048 archive/data/326
-    16384 archive/data/327
-    256 archive/data/328
-    16384 archive/data/329
-    256 archive/data/330
-    1048576 archive/data/331
-    1048576 archive/data/332
-    1048576 archive/data/333
-    1048576 archive/data/334
-    2048 archive/data/335
-    2048 archive/data/336
-    2097152 archive/data/337
-    2097152 archive/data/338
-    256 archive/data/339
-    256 archive/data/340
-    131072 archive/data/341
-    2048 archive/data/342
-    16384 archive/data/343
-    256 archive/data/344
-    16384 archive/data/345
-    256 archive/data/346
-    1048576 archive/data/347
-    1048576 archive/data/348
-    1048576 archive/data/349
-    1048576 archive/data/350
-    2048 archive/data/351
-    2048 archive/data/352
-    2097152 archive/data/353
-    2097152 archive/data/354
-    256 archive/data/355
-    256 archive/data/356
-    131072 archive/data/357
-    2048 archive/data/358
-    16384 archive/data/359
-    256 archive/data/360
-    16384 archive/data/361
-    256 archive/data/362
-    1048576 archive/data/363
-    1048576 archive/data/364
-    1048576 archive/data/365
-    1048576 archive/data/366
-    2048 archive/data/367
-    2048 archive/data/368
-    2097152 archive/data/369
-    2097152 archive/data/370
-    256 archive/data/371
-    256 archive/data/372
-    131072 archive/data/373
-    2048 archive/data/374
-    16384 archive/data/375
-    256 archive/data/376
-    16384 archive/data/377
-    256 archive/data/378
-    1048576 archive/data/379
-    1048576 archive/data/380
-    1048576 archive/data/381
-    1048576 archive/data/382
-    2048 archive/data/383
-    2048 archive/data/384
-    2097152 archive/data/385
-    2097152 archive/data/386
-    256 archive/data/387
-    256 archive/data/388
-    131072 archive/data/389
-    2048 archive/data/390
-    16384 archive/data/391
-    256 archive/data/392
-    16384 archive/data/393
-    256 archive/data/394
-    1048576 archive/data/395
-    1048576 archive/data/396
-    1048576 archive/data/397
-    1048576 archive/data/398
-    2048 archive/data/399
-    2048 archive/data/400
-    2097152 archive/data/401
-    2097152 archive/data/402
-    256 archive/data/403
-    256 archive/data/404
-    131072 archive/data/405
-    2048 archive/data/406
-    16384 archive/data/407
-    256 archive/data/408
-    16384 archive/data/409
-    256 archive/data/410
-    1048576 archive/data/411
-    1048576 archive/data/412
-    1048576 archive/data/413
-    1048576 archive/data/414
-    2048 archive/data/415
-    2048 archive/data/416
-    2097152 archive/data/417
-    2097152 archive/data/418
-    256 archive/data/419
-    256 archive/data/420
-    131072 archive/data/421
-    2048 archive/data/422
-    16384 archive/data/423
-    256 archive/data/424
-    16384 archive/data/425
-    256 archive/data/426
-    1048576 archive/data/427
-    1048576 archive/data/428
-    1048576 archive/data/429
-    1048576 archive/data/430
-    2048 archive/data/431
-    2048 archive/data/432
-    2097152 archive/data/433
-    2097152 archive/data/434
-    256 archive/data/435
-    256 archive/data/436
-    131072 archive/data/437
-    2048 archive/data/438
-    16384 archive/data/439
-    256 archive/data/440
-    16384 archive/data/441
-    256 archive/data/442
-    1048576 archive/data/443
-    1048576 archive/data/444
-    1048576 archive/data/445
-    1048576 archive/data/446
-    2048 archive/data/447
-    2048 archive/data/448
-    2097152 archive/data/449
-    2097152 archive/data/450
-    256 archive/data/451
-    256 archive/data/452
-    131072 archive/data/453
-    2048 archive/data/454
-    16384 archive/data/455
-    256 archive/data/456
-    16384 archive/data/457
-    256 archive/data/458
-    1048576 archive/data/459
-    1048576 archive/data/460
-    1048576 archive/data/461
-    1048576 archive/data/462
-    2048 archive/data/463
-    2048 archive/data/464
-    2097152 archive/data/465
-    2097152 archive/data/466
-    256 archive/data/467
-    256 archive/data/468
-    131072 archive/data/469
-    2048 archive/data/470
-    16384 archive/data/471
-    256 archive/data/472
-    16384 archive/data/473
-    256 archive/data/474
-    1048576 archive/data/475
-    1048576 archive/data/476
-    1048576 archive/data/477
-    1048576 archive/data/478
-    2048 archive/data/479
-    2048 archive/data/480
-    2097152 archive/data/481
-    2097152 archive/data/482
-    256 archive/data/483
-    256 archive/data/484
-    131072 archive/data/485
-    2048 archive/data/486
-    16384 archive/data/487
-    256 archive/data/488
-    16384 archive/data/489
-    256 archive/data/490
-    1048576 archive/data/491
-    1048576 archive/data/492
-    1048576 archive/data/493
-    1048576 archive/data/494
-    2048 archive/data/495
-    2048 archive/data/496
-    2097152 archive/data/497
-    2097152 archive/data/498
-    2048 archive/data/499
-    2097152 archive/data/500
-    4096 archive/data/501
-    20480000 archive/data/502
-    20000 archive/data/503
-    2 archive/version
-    40 archive/.data/serialization_id
-   (PyTorch zip: scanned in place by picklescan, not extracted)
--- nested zip: model.tabpfn_fit
-    603 init_params.json
-    94934 fitted_attrs.joblib
-    88015 executor_state.joblib
--- picklescan 1.0.5
-ERROR: parsing pickle in <scan-dir>/x/model.tabpfn_fit.x\executor_state.joblib: at position 1533, opcode b'\x02' unknown
-ERROR: parsing pickle in <scan-dir>/x/model.tabpfn_fit.x\fitted_attrs.joblib: at position 45531, opcode b'\x04' unknown
------------ SCAN SUMMARY -----------
-Scanned files: 3
-Infected files: 0
-Suspicious globals: 27
-Dangerous globals: 0
-All globals found:
-  * collections.OrderedDict - innocuous
-  * torch.FloatStorage - innocuous
-  * torch._utils._rebuild_tensor_v2 - innocuous
-  * numpy.ndarray - innocuous
-  * tabpfn.inference.InferenceEngineCachePreprocessing - suspicious
-  * joblib.numpy_pickle.NumpyArrayWrapper - suspicious
-  * tabpfn.preprocessing.configs.PreprocessorConfig - suspicious
-  * numpy.dtype - innocuous
-  * sklearn.pipeline.Pipeline - suspicious
-  * tabpfn.preprocessing.configs.RegressorEnsembleConfig - suspicious
-  * tabpfn.preprocessing.steps.safe_power_transformer.SafePowerTransformer - suspicious
-  * numpy._core.multiarray.scalar - suspicious
-  * tabpfn.preprocessing.ensemble.TabPFNEnsemblePreprocessor - suspicious
-  * numpy.ndarray - innocuous
-  * joblib.numpy_pickle.NumpyArrayWrapper - suspicious
-  * collections.OrderedDict - innocuous
-  * tabpfn.preprocessing.steps.preprocessing_helpers.OrderPreservingColumnTransformer - suspicious
-  * builtins.slice - suspicious
-  * sklearn.compose._column_transformer.make_column_selector - suspicious
-  * FullSupportBarDistribution.dtype - suspicious
-  * tabpfn.preprocessing.steps.safe_power_transformer.SafePowerTransformer - suspicious
-  * numpy._core.multiarray.scalar - suspicious
-  * numpy._core.multiarray._reconstruct - innocuous
-  * sklearn.preprocessing._encoders.OrdinalEncoder - suspicious
-  * torch._utils._rebuild_tensor_v2 - innocuous
-  * tabpfn.architectures.shared.bar_distribution.FullSupportBarDistribution - suspicious
-  * tabpfn.preprocessing.configs.PreprocessorConfig - suspicious
-  * numpy.Feature - suspicious
-  * numpy.FeatureModality - suspicious
-  * tabpfn.inference_config.InferenceConfig - suspicious
-  * torch.storage._load_from_bytes - suspicious
-  * sklearn.preprocessing._function_transformer.FunctionTransformer - suspicious
-  * numpy.dtype - innocuous
-  * sklearn.pipeline.Pipeline - suspicious
-  * tabpfn.preprocessing.configs.RegressorEnsembleConfig - suspicious
-  * numpy.float64 - suspicious
-  * tabpfn.preprocessing.datamodel.FeatureSchema - suspicious
-picklescan_exit=2
--- restricted-unpickler global inventory (joblib_globals.py)
-== <scan-dir>/x/model.tabpfn_fit.x/executor_state.joblib
-   parsed
-   stub  builtins.slice x1
-   allow joblib.numpy_pickle.NumpyArrayWrapper x1
-   allow numpy.dtype x1
-   stub  numpy.float64 x1
-   allow numpy.ndarray x1
-   allow numpy._core.multiarray.scalar x1
-   stub  sklearn.compose._column_transformer.ColumnTransformer x1
-   stub  sklearn.pipeline.Pipeline x1
-   stub  sklearn.preprocessing._data.StandardScaler x1
-   stub  sklearn.preprocessing._encoders.OrdinalEncoder x1
-   stub  sklearn.preprocessing._function_transformer.FunctionTransformer x1
-   stub  tabpfn.inference.InferenceEngineCachePreprocessing x1
-   stub  tabpfn.preprocessing.configs.PreprocessorConfig x1
-   stub  tabpfn.preprocessing.configs.RegressorEnsembleConfig x1
-   stub  tabpfn.preprocessing.datamodel.Feature x1
-   stub  tabpfn.preprocessing.datamodel.FeatureModality x1
-   stub  tabpfn.preprocessing.datamodel.FeatureSchema x1
-   stub  tabpfn.preprocessing.datamodel.GPUTransformType x1
-   stub  tabpfn.preprocessing.ensemble.TabPFNEnsembleMember x1
-   stub  tabpfn.preprocessing.ensemble.TabPFNEnsemblePreprocessor x1
-   stub  tabpfn.preprocessing.pipeline_interface.PreprocessingPipeline x1
-   stub  tabpfn.preprocessing.steps.encode_categorical_features_step.EncodeCategoricalFeaturesStep x1
-   stub  tabpfn.preprocessing.steps.remove_constant_features_step.RemoveConstantFeaturesStep x1
-   stub  tabpfn.preprocessing.steps.reshape_feature_distribution_step.ReshapeFeatureDistributionsStep x1
-   stub  tabpfn.preprocessing.steps.safe_power_transformer.SafePowerTransformer x1
-   stub  tabpfn.preprocessing.steps.utils._NoInverseImputer x1
-   stub  tabpfn.preprocessing.steps.utils._identity x1
-   stub  tabpfn.preprocessing.steps.utils._replace_inf_with_nan x1
-   stub  tabpfn.preprocessing.torch.pipeline_interface.TorchPreprocessingPipeline x1
-   stub  tabpfn.preprocessing.torch.steps.TorchAddFingerprintFeaturesStep x1
-   stub  tabpfn.preprocessing.torch.steps.TorchAddSVDFeaturesStep x1
-   stub  tabpfn.preprocessing.torch.steps.TorchSelectiveQuantileTransformerStep x1
-   stub  tabpfn.preprocessing.torch.steps.TorchSelectiveSquashingScalerStep x1
-   stub  tabpfn.preprocessing.torch.steps.TorchShuffleFeaturesStep x1
-   stub  tabpfn.preprocessing.torch.torch_quantile_transformer.TorchQuantileTransformer x1
-   stub  tabpfn.preprocessing.torch.torch_squashing_scaler.TorchSquashingScaler x1
-   stub  tabpfn.preprocessing.torch.torch_svd.TorchSafeStandardScaler x1
-== <scan-dir>/x/model.tabpfn_fit.x/fitted_attrs.joblib
-   parsed
-   stub  builtins.slice x1
-   stub  collections.OrderedDict x1
-   allow joblib.numpy_pickle.NumpyArrayWrapper x1
-   allow numpy.dtype x3
-   stub  numpy.float64 x1
-   allow numpy.ndarray x3
-   allow numpy._core.multiarray._reconstruct x2
-   allow numpy._core.multiarray.scalar x1
-   stub  sklearn.compose._column_transformer.ColumnTransformer x1
-   stub  sklearn.compose._column_transformer.make_column_selector x1
-   stub  sklearn.pipeline.Pipeline x1
-   stub  sklearn.preprocessing._data.StandardScaler x1
-   stub  sklearn.preprocessing._encoders.OrdinalEncoder x1
-   stub  sklearn.preprocessing._function_transformer.FunctionTransformer x1
-   stub  tabpfn.architectures.shared.bar_distribution.FullSupportBarDistribution x1
-   stub  tabpfn.inference_config.InferenceConfig x1
-   stub  tabpfn.preprocessing.configs.PreprocessorConfig x1
-   stub  tabpfn.preprocessing.configs.RegressorEnsembleConfig x1
-   stub  tabpfn.preprocessing.datamodel.Feature x1
-   stub  tabpfn.preprocessing.datamodel.FeatureModality x1
-   stub  tabpfn.preprocessing.datamodel.FeatureSchema x1
-   stub  tabpfn.preprocessing.datamodel.GPUTransformType x1
-   stub  tabpfn.preprocessing.ensemble.TabPFNEnsemblePreprocessor x1
-   stub  tabpfn.preprocessing.pipeline_interface.PreprocessingPipeline x1
-   stub  tabpfn.preprocessing.steps.encode_categorical_features_step.EncodeCategoricalFeaturesStep x1
-   stub  tabpfn.preprocessing.steps.preprocessing_helpers.OrderPreservingColumnTransformer x1
-   stub  tabpfn.preprocessing.steps.remove_constant_features_step.RemoveConstantFeaturesStep x1
-   stub  tabpfn.preprocessing.steps.reshape_feature_distribution_step.ReshapeFeatureDistributionsStep x1
-   stub  tabpfn.preprocessing.steps.safe_power_transformer.SafePowerTransformer x1
-   stub  tabpfn.preprocessing.steps.utils._NoInverseImputer x1
-   stub  tabpfn.preprocessing.steps.utils._identity x1
-   stub  tabpfn.preprocessing.steps.utils._replace_inf_with_nan x1
-   stub  torch._utils._rebuild_tensor_v2 x1
-   stub  torch.storage._load_from_bytes x1
-== nested payload nested-b73df5121b9984f6.pt: 20248 bytes, sha256=b73df5121b9984f6b2f5fde88fa5d4ed2a0fe292d0b79e24a914cf2c0ea69775 (saved, not loaded)
-== nested payload nested-bdf1894ffabd7de6.pt: 20244 bytes, sha256=bdf1894ffabd7de62b69a3ac26b6b8c3790c67e09273a795667b9ef05f67a886 (saved, not loaded)
-== nested payload nested-6aa4ff6ae2f88f38.pt: 20248 bytes, sha256=6aa4ff6ae2f88f384f2ad80b5f9aee0372c533890500fd25c3664b69eb31cc5f (saved, not loaded)
-== nested payload nested-d6679d7524d6e063.pt: 20242 bytes, sha256=d6679d7524d6e0639278e7b7f6fd96ec00abf1af1484bda0ea93c6b7e922b8b6 (saved, not loaded)
-inventory_exit=0
--- picklescan 1.0.5 of nested torch payloads
------------ SCAN SUMMARY -----------
-Scanned files: 4
-Infected files: 0
-Suspicious globals: 0
-Dangerous globals: 0
-All globals found:
-  * torch.FloatStorage - innocuous
-  * torch.FloatStorage - innocuous
-  * torch.FloatStorage - innocuous
-  * torch.FloatStorage - innocuous
-nested_picklescan_exit=0
+tools: picklescan 1.0.5, joblib 1.6.0, numpy 2.5.4, python 3.13.16
+-- model.tabpfn_fit [archive] EXTRACTED
+   3 members queued
+-- model.ckpt [pytorch-zip] CLEAN
+   method: picklescan 1.0.5
+   innocuous  collections.OrderedDict
+   innocuous  torch.FloatStorage
+   innocuous  torch._utils._rebuild_tensor_v2
+-- model.tabpfn_fit.x/fitted_attrs.joblib [joblib] CLEAN
+   method: picklescan 1.0.5; restricted load (joblib 1.6.0, numpy 2.5.4)
+   suspicious builtins.slice
+   innocuous  collections.OrderedDict
+   suspicious joblib.numpy_pickle.NumpyArrayWrapper
+   innocuous  numpy.dtype
+   suspicious numpy.float64
+   innocuous  numpy.ndarray
+   innocuous  numpy._core.multiarray._reconstruct
+   suspicious numpy._core.multiarray.scalar
+   suspicious sklearn.compose._column_transformer.ColumnTransformer
+   suspicious sklearn.compose._column_transformer.make_column_selector
+   suspicious sklearn.pipeline.Pipeline
+   suspicious sklearn.preprocessing._data.StandardScaler
+   suspicious sklearn.preprocessing._encoders.OrdinalEncoder
+   suspicious sklearn.preprocessing._function_transformer.FunctionTransformer
+   suspicious tabpfn.architectures.shared.bar_distribution.FullSupportBarDistribution
+   suspicious tabpfn.inference_config.InferenceConfig
+   suspicious tabpfn.preprocessing.configs.PreprocessorConfig
+   suspicious tabpfn.preprocessing.configs.RegressorEnsembleConfig
+   suspicious tabpfn.preprocessing.datamodel.Feature
+   suspicious tabpfn.preprocessing.datamodel.FeatureModality
+   suspicious tabpfn.preprocessing.datamodel.FeatureSchema
+   suspicious tabpfn.preprocessing.datamodel.GPUTransformType
+   suspicious tabpfn.preprocessing.ensemble.TabPFNEnsemblePreprocessor
+   suspicious tabpfn.preprocessing.pipeline_interface.PreprocessingPipeline
+   suspicious tabpfn.preprocessing.steps.encode_categorical_features_step.EncodeCategoricalFeaturesStep
+   suspicious tabpfn.preprocessing.steps.preprocessing_helpers.OrderPreservingColumnTransformer
+   suspicious tabpfn.preprocessing.steps.remove_constant_features_step.RemoveConstantFeaturesStep
+   suspicious tabpfn.preprocessing.steps.reshape_feature_distribution_step.ReshapeFeatureDistributionsStep
+   suspicious tabpfn.preprocessing.steps.safe_power_transformer.SafePowerTransformer
+   suspicious tabpfn.preprocessing.steps.utils._NoInverseImputer
+   suspicious tabpfn.preprocessing.steps.utils._identity
+   suspicious tabpfn.preprocessing.steps.utils._replace_inf_with_nan
+   innocuous  torch._utils._rebuild_tensor_v2
+   suspicious torch.storage._load_from_bytes
+-- model.tabpfn_fit.x/executor_state.joblib [joblib] CLEAN
+   method: picklescan 1.0.5; restricted load (joblib 1.6.0, numpy 2.5.4)
+   suspicious builtins.slice
+   suspicious joblib.numpy_pickle.NumpyArrayWrapper
+   innocuous  numpy.dtype
+   suspicious numpy.float64
+   innocuous  numpy.ndarray
+   suspicious numpy._core.multiarray.scalar
+   suspicious sklearn.compose._column_transformer.ColumnTransformer
+   suspicious sklearn.pipeline.Pipeline
+   suspicious sklearn.preprocessing._data.StandardScaler
+   suspicious sklearn.preprocessing._encoders.OrdinalEncoder
+   suspicious sklearn.preprocessing._function_transformer.FunctionTransformer
+   suspicious tabpfn.inference.InferenceEngineCachePreprocessing
+   suspicious tabpfn.preprocessing.configs.PreprocessorConfig
+   suspicious tabpfn.preprocessing.configs.RegressorEnsembleConfig
+   suspicious tabpfn.preprocessing.datamodel.Feature
+   suspicious tabpfn.preprocessing.datamodel.FeatureModality
+   suspicious tabpfn.preprocessing.datamodel.FeatureSchema
+   suspicious tabpfn.preprocessing.datamodel.GPUTransformType
+   suspicious tabpfn.preprocessing.ensemble.TabPFNEnsembleMember
+   suspicious tabpfn.preprocessing.ensemble.TabPFNEnsemblePreprocessor
+   suspicious tabpfn.preprocessing.pipeline_interface.PreprocessingPipeline
+   suspicious tabpfn.preprocessing.steps.encode_categorical_features_step.EncodeCategoricalFeaturesStep
+   suspicious tabpfn.preprocessing.steps.remove_constant_features_step.RemoveConstantFeaturesStep
+   suspicious tabpfn.preprocessing.steps.reshape_feature_distribution_step.ReshapeFeatureDistributionsStep
+   suspicious tabpfn.preprocessing.steps.safe_power_transformer.SafePowerTransformer
+   suspicious tabpfn.preprocessing.steps.utils._NoInverseImputer
+   suspicious tabpfn.preprocessing.steps.utils._identity
+   suspicious tabpfn.preprocessing.steps.utils._replace_inf_with_nan
+   suspicious tabpfn.preprocessing.torch.pipeline_interface.TorchPreprocessingPipeline
+   suspicious tabpfn.preprocessing.torch.steps.TorchAddFingerprintFeaturesStep
+   suspicious tabpfn.preprocessing.torch.steps.TorchAddSVDFeaturesStep
+   suspicious tabpfn.preprocessing.torch.steps.TorchSelectiveQuantileTransformerStep
+   suspicious tabpfn.preprocessing.torch.steps.TorchSelectiveSquashingScalerStep
+   suspicious tabpfn.preprocessing.torch.steps.TorchShuffleFeaturesStep
+   suspicious tabpfn.preprocessing.torch.torch_quantile_transformer.TorchQuantileTransformer
+   suspicious tabpfn.preprocessing.torch.torch_squashing_scaler.TorchSquashingScaler
+   suspicious tabpfn.preprocessing.torch.torch_svd.TorchSafeStandardScaler
+-- <nested>/nested-b73df5121b9984f6.pt [legacy-torch] CLEAN
+   method: picklescan 1.0.5
+   innocuous  torch.FloatStorage
+-- <nested>/nested-bdf1894ffabd7de6.pt [legacy-torch] CLEAN
+   method: picklescan 1.0.5
+   innocuous  torch.FloatStorage
+-- <nested>/nested-6aa4ff6ae2f88f38.pt [legacy-torch] CLEAN
+   method: picklescan 1.0.5
+   innocuous  torch.FloatStorage
+-- <nested>/nested-d6679d7524d6e063.pt [legacy-torch] CLEAN
+   method: picklescan 1.0.5
+   innocuous  torch.FloatStorage
+summary: 7 pickle files; clean=7 dangerous=0 incomplete=0
 scan_status=0
