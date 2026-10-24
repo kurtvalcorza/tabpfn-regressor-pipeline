@@ -5,7 +5,7 @@ tools: picklescan 1.0.5, joblib 1.6.0, numpy 2.5.4, python 3.13.16
    3 members queued
 -- model.ckpt [pytorch-zip] EXTRACTED
    510 members queued
--- model.tabpfn_fit.x/fitted_attrs.joblib [joblib] CLEAN
+-- model.tabpfn_fit!/fitted_attrs.joblib [joblib] CLEAN
    method: picklescan 1.0.5 (bytes); restricted load (joblib 1.6.0, numpy 2.5.4)
    suspicious builtins.slice
    innocuous  collections.OrderedDict
@@ -41,7 +41,7 @@ tools: picklescan 1.0.5, joblib 1.6.0, numpy 2.5.4, python 3.13.16
    suspicious tabpfn.preprocessing.steps.utils._replace_inf_with_nan
    innocuous  torch._utils._rebuild_tensor_v2
    suspicious torch.storage._load_from_bytes
--- model.tabpfn_fit.x/executor_state.joblib [joblib] CLEAN
+-- model.tabpfn_fit!/executor_state.joblib [joblib] CLEAN
    method: picklescan 1.0.5 (bytes); restricted load (joblib 1.6.0, numpy 2.5.4)
    suspicious builtins.slice
    suspicious joblib.numpy_pickle.NumpyArrayWrapper
@@ -80,7 +80,7 @@ tools: picklescan 1.0.5, joblib 1.6.0, numpy 2.5.4, python 3.13.16
    suspicious tabpfn.preprocessing.torch.torch_quantile_transformer.TorchQuantileTransformer
    suspicious tabpfn.preprocessing.torch.torch_squashing_scaler.TorchSquashingScaler
    suspicious tabpfn.preprocessing.torch.torch_svd.TorchSafeStandardScaler
--- model.ckpt.x/archive/data.pkl [pickle] CLEAN
+-- model.ckpt!/archive/data.pkl [pickle] CLEAN
    method: picklescan 1.0.5 (bytes)
    innocuous  collections.OrderedDict
    innocuous  torch.FloatStorage
