@@ -50,7 +50,7 @@ Training output, under `DIMER_OUTPUT_DIR` (`/data/fine-tuning/<run_id>/`):
 
 ```text
 artifacts/model.tabpfn_fit
-artifacts/model.ckpt
+artifacts/model.safetensors
 artifacts/artifact_manifest.json
 evaluation/report.json
 logs/run-summary.json
@@ -58,7 +58,7 @@ progress/epoch_*.json
 result.json
 ```
 
-The `.tabpfn_fit` archive intentionally omits foundation weights; `model.ckpt` sits beside it under `artifacts/`. DIMER serving must use `serving/load_artifact.py`, or equivalent logic, so the restored estimator points to the relocated companion `model.ckpt`. `result.json` declares `artifacts.modelArtifact` (path relative to `/data`) that `export-to-repository` resolves — see `CONTRACT.md`.
+The `.tabpfn_fit` archive intentionally omits foundation weights; `model.safetensors` (bundle format v2, `DIMER_CONTRACT.md`; no pickle weight file is left in the output) sits beside it under `artifacts/`. DIMER serving must use `serving/load_artifact.py`, or equivalent logic, so the restored estimator points to the relocated companion `model.safetensors`. `result.json` declares `artifacts.modelArtifact` (path relative to `/data`) that `export-to-repository` resolves — see `CONTRACT.md`.
 
 ## Acceptance test
 
