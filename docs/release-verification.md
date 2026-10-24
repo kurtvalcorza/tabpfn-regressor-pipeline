@@ -199,6 +199,46 @@ validation MAE 0.2935 → 0.2927, RMSE 0.3623 → 0.3638, R² 0.9948 → 0.9947 
 | `tabpfn_regressor_colab_2e51561_colab-cli-t4_activity_run_copy.ipynb` | `f0bfb56caa0fd33f8a5a5e75c2e390e022e910019c5ed93e731b303fc1466721` | unchanged (no local path) |
 | `tabpfn_regressor_colab_2e51561_colab-cli-t4_activity_run_summary.json` | `19b5c7a085de7796079b475f7409a6bd53135d6ce1bc215ea3c48331c8e49864` | unchanged (no local path) |
 
+### Serialization scan of the pinned sample artifact (2026-10-23, retroactive)
+
+ARTIFACT_SPEC 2.0 (ml-worker#90): SER9 (b) for `model.ckpt`, a byte copy of the upstream code-capable checkpoint kept so the bundle can be checked against the pinned upstream identity; SER9 (a) for `model.tabpfn_fit`, TabPFN's own fitted-state format, which has no faithful non-code-executing equivalent. Because `model.ckpt` is a plain tensor state dict, a faithful `safetensors` conversion exists, so under SER9 (b) the next release must publish that conversion beside the byte copy; this asset does not have it yet. Both files need a recorded trust note (SER6: "Artifact contract and trust boundary" in [`tutorials/README.md`](../tutorials/README.md)) and a scan with an acceptable outcome (SER13). SER13 asks for the scan **before** publication; this asset was published on
+2026-10-22, before 2.0 existed, so this is a **retroactive** scan of the published bytes, not the pre-publication control. The
+next sample artifact is to be scanned before upload and published only at the digest that passed.
+
+The release asset `sample-artifact-synthetic-v1/tabpfn_regressor_artifact.zip` was downloaded on 2026-10-23; its SHA-256 (`7542b7210c54d051c186675a2cc4782eb490c6ae1f098728876403be3838d388`) matches the pinned value. `scan.py`
+(picklescan 1.0.5, joblib 1.6.0, numpy 2.5.4, Python 3.13) extracted it with member-path checks, reached every nested archive,
+and judged each pickle file on its own: **dangerous** if any global is dangerous, **incomplete** if no recorded method read the
+whole file, otherwise **clean**. Content decides what is a pickle, not the file name, and every archive (PyTorch zips
+included) is unpacked so each member gets its own verdict.
+
+The two joblib files interleave raw numpy bytes with pickle instructions, so picklescan cannot read them to the end. For those, `scan.py` runs a **restricted load**: joblib's own reader with `find_class` replaced, so only numpy's array and scalar rebuilders, `numpy.dtype` and joblib's `NumpyArrayWrapper` are real and run; every other global is an inert stub, recorded, and classified with picklescan's own tables. Payloads of `torch.storage._load_from_bytes` are saved as files and scanned like any other file, never loaded.
+
+| File | Kind | Verdict |
+|---|---|---|
+| `model.tabpfn_fit` | archive | extracted |
+| `model.ckpt` | pytorch-zip | extracted |
+| `model.tabpfn_fit!/fitted_attrs.joblib` | joblib | clean |
+| `model.tabpfn_fit!/executor_state.joblib` | joblib | clean |
+| `model.ckpt!/archive/data.pkl` | pickle | clean |
+| `<nested>/nested-b73df5121b9984f6.pt` | legacy-torch | clean |
+| `<nested>/nested-bdf1894ffabd7de6.pt` | legacy-torch | clean |
+| `<nested>/nested-6aa4ff6ae2f88f38.pt` | legacy-torch | clean |
+| `<nested>/nested-d6679d7524d6e063.pt` | legacy-torch | clean |
+
+- **Result:** 7 pickle files; clean=7 dangerous=0 incomplete=0; `scan_status=0`. Dangerous globals: none.
+- **Globals (distinct, all files):** 46, by top-level package: tabpfn (29), sklearn (6), numpy (5), torch (3), builtins (1), collections (1), joblib (1). The per-file lists with picklescan's
+  classification are in the report.
+- **Evidence:** `docs/execution-evidence/2026-10-23/ser13-sample-artifact-scan/` holds `scan-report.txt` exactly as `scan.py`
+  wrote it (it records only paths inside the asset), `scan.py`, and `test_scan.py`, its regression tests (dangerous globals
+  behind joblib buffers or beside joblib files, protocol-0 pickles under other names, pickle/zip polyglots, every PyTorch zip
+  member, object-dtype .npy files, torch payloads embedded in complete pickles, compressed (including zlib of any
+  window size) and truncated pickles, nested zip and tar archives that try to overwrite queued members, duplicate,
+  escaping and malformed members).
+  `scan.py` exits 0 clean, 1 dangerous, 2 incomplete, 3 could not scan.
+- **Scope:** the threat model at the top of `scan.py` (frozen 2026-10-24) says what the scan covers. Data a loader
+  decodes with no format marker, code that is not pickle, and harm through callables picklescan rates safe or
+  suspicious are out of scope; review findings inside the scope are fixed, findings outside it are recorded.
+
 ### Local lock-only drives (not clean-runtime evidence)
 
 Code cells executed in order by nbclient with an ipykernel kernel on Linux x86_64 (WSL2), CPU only (`CUDA_VISIBLE_DEVICES=-1`),
