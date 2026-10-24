@@ -215,6 +215,7 @@ The two joblib files interleave raw numpy bytes with pickle instructions, so pic
 
 | File | Kind | Verdict |
 |---|---|---|
+| `tabpfn_regressor_artifact.zip` | archive | extracted |
 | `model.tabpfn_fit` | archive | extracted |
 | `model.ckpt` | pytorch-zip | extracted |
 | `model.tabpfn_fit!/fitted_attrs.joblib` | joblib | clean |
@@ -231,9 +232,10 @@ The two joblib files interleave raw numpy bytes with pickle instructions, so pic
 - **Evidence:** `docs/execution-evidence/2026-10-23/ser13-sample-artifact-scan/` holds `scan-report.txt` exactly as `scan.py`
   wrote it (it records only paths inside the asset), `scan.py`, and `test_scan.py`, its regression tests (dangerous globals
   behind joblib buffers or beside joblib files, protocol-0 pickles under other names, pickle/zip polyglots, every PyTorch zip
-  member, object-dtype .npy files, torch payloads embedded in complete pickles, compressed (including zlib of any
-  window size) and truncated pickles, nested zip and tar archives that try to overwrite queued members, duplicate,
-  escaping and malformed members).
+  member, object-dtype .npy files in every dtype spelling, torch payloads in complete pickles, object arrays and
+  protocol-2 bytes, memo-aliased globals, a pickle in front of the asset itself, zip/tar polyglots, compressed
+  (including zlib of any window size) and truncated pickles, nested archives that try to overwrite queued members,
+  duplicate, escaping and malformed members).
   `scan.py` exits 0 clean, 1 dangerous, 2 incomplete, 3 could not scan.
 - **Scope:** the threat model at the top of `scan.py` (frozen 2026-10-24) says what the scan covers. Data a loader
   decodes with no format marker, code that is not pickle, and harm through callables picklescan rates safe or
