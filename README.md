@@ -96,7 +96,7 @@ One generated notebook under `tutorials/` demonstrates the pipeline **without th
 `tools/notebook_template.py`, it carries
 `src/tabpfn_regressor_pipeline/pipeline.py` verbatim, the 4-file snapshot manifest of the pinned
 `Prior-Labs/tabpfn_3` checkpoint (`tabpfn-v3-regressor-v3_default.ckpt` at immutable revision
-`24a16a89d245878b846555110985634aa2e656d7`, see `docs/WEIGHTS.md`) and the `pyproject.toml` runtime pins inline, so the
+`24a16a89d245878b846555110985634aa2e656d7`, served from its pinned safetensors conversion, see `docs/WEIGHTS.md`) and the `pyproject.toml` runtime pins inline, so the
 exported `.ipynb` needs no clone, no package install, no token and no access to this repository.
 
 | Notebook | Profile | What it does |
@@ -128,7 +128,7 @@ Static gates (also run by CI): `ruff check .`, `pytest -m "not integration"`, `p
 
 ## Release status
 
-**Candidate — the current E2E blob `62d09b0e` (regenerated from `7bfee17`, which refuses to load a TabPFN checkpoint when torch is older than 2.6 or `TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD` is set) has no recorded hosted run yet (REL14). The hosted default-path and optional-activity runs at
+**Candidate — the current E2E blob `d421385e` (regenerated from `3a6a95c`, which serves the model from the pinned safetensors conversion of the checkpoint; the guard of `7bfee17` against a pickle load without `weights_only` stays) has no recorded hosted run yet (REL14). The hosted default-path and optional-activity runs at
 `2e51561` (2026-10-23, PASS) cover the previous blob `c6d534ad` and are history, as are the runs at `51a9090` of blob `a28ab542`. A
 hosted default-path run and an optional-activity run of the current blob, a BYOD run (one input accepted, one refused; REL12) and a
 browser run of the interactive journeys (REL2) are required before promotion** (`STATUS.md`). The
