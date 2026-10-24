@@ -128,7 +128,7 @@ Static gates (also run by CI): `ruff check .`, `pytest -m "not integration"`, `p
 
 ## Release status
 
-**Candidate — the current E2E blob `bb5f3fa7` (regenerated from `c1c0753`: bundle format v2 with `model.safetensors`, see `DIMER_CONTRACT.md`; stacked on `3a6a95c`, which serves the model from the pinned safetensors conversion of the checkpoint; the guard of `7bfee17` against a pickle load without `weights_only` stays) has no recorded hosted run yet (REL14). The hosted default-path and optional-activity runs at
+**Candidate — the current E2E blob `c69447ee` (regenerated from `9e2cad9`: bundle format v2 with `model.safetensors`, see `DIMER_CONTRACT.md`; stacked on `3a6a95c`, which serves the model from the pinned safetensors conversion of the checkpoint; the guard of `7bfee17` against a pickle load without `weights_only` stays) has no recorded hosted run yet (REL14). The hosted default-path and optional-activity runs at
 `2e51561` (2026-10-23, PASS) cover the previous blob `c6d534ad` and are history, as are the runs at `51a9090` of blob `a28ab542`. A
 hosted default-path run and an optional-activity run of the current blob, a BYOD run (one input accepted, one refused; REL12) and a
 browser run of the interactive journeys (REL2) are required before promotion** (`STATUS.md`). The
@@ -351,8 +351,8 @@ A successful run materializes the DIMER artifact layout under the run's output d
     "test": { "mae": 0.2685, "rmse": 0.3468, "r2": 0.9950 }
   },
   "artifacts": {
-    "modelArtifact":       { "path": "fine-tuning/<run_id>/artifacts/model.safetensors", "name": "model.safetensors", "contentType": "application/octet-stream", "sizeBytes": N, "sha256": "…" },
-    "fittedEstimator":     { "path": "fine-tuning/<run_id>/artifacts/model.tabpfn_fit", "name": "model.tabpfn_fit", "contentType": "application/octet-stream", "sizeBytes": N },
+    "modelArtifact":       { "path": "fine-tuning/<run_id>/artifacts/model.tabpfn_fit", "name": "model.tabpfn_fit", "contentType": "application/octet-stream", "sizeBytes": N, "sha256": "…" },
+    "modelWeights":        { "path": "fine-tuning/<run_id>/artifacts/model.safetensors", "name": "model.safetensors", "contentType": "application/octet-stream", "sizeBytes": N, "sha256": "…" },
     "foundationCheckpoint":{ "path": "fine-tuning/<run_id>/artifacts/model.safetensors", "name": "model.safetensors", "contentType": "application/octet-stream", "sizeBytes": N },
     "evaluationReport":    { "path": "fine-tuning/<run_id>/evaluation/report.json",      "name": "report.json",       "contentType": "application/json" },
     "logArtifact":         { "path": "fine-tuning/<run_id>/logs/run-summary.json",       "name": "run-summary.json",  "contentType": "application/json" },

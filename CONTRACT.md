@@ -89,10 +89,10 @@ finetuner emits the training result):
                "validation": { "mae": .., "rmse": .., "r2": .., "predictionMin/Max": .. },
                "test": { .. | null } },
   "artifacts": {
-    "modelArtifact":    { "path": "fine-tuning/<run_id>/artifacts/model.safetensors",
-                          "name": "model.safetensors", "contentType": "application/octet-stream",
+    "modelArtifact":    { "path": "fine-tuning/<run_id>/artifacts/model.tabpfn_fit",
+                          "name": "model.tabpfn_fit", "contentType": "application/octet-stream",
                           "sizeBytes": N, "sha256": ".." },
-    "fittedEstimator":  { "path": "fine-tuning/<run_id>/artifacts/model.tabpfn_fit", "..": ".." },
+    "modelWeights":     { "path": "fine-tuning/<run_id>/artifacts/model.safetensors", "sha256": "..", "sizeBytes": N, "..": ".." },
     "evaluationReport": { "path": "fine-tuning/<run_id>/evaluation/report.json", "..": ".." },
     "logArtifact":      { "path": "fine-tuning/<run_id>/logs/run-summary.json", "..": ".." },
     "foundationCheckpoint": { "path": "fine-tuning/<run_id>/artifacts/model.safetensors", "..": ".." },
