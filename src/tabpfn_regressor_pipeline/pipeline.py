@@ -678,7 +678,11 @@ def _coerce_non_json_init_params(model: Any) -> None:
 
 @dataclass
 class TabPFNRegressorPipeline:
-    """The verified TabPFN-3 checkpoint plus, after ``fit`` or ``from_artifact``, an in-context-fitted estimator."""
+    """The verified TabPFN-3 checkpoint plus, after ``fit`` or ``from_artifact``, an in-context-fitted estimator.
+
+    ``weights_path`` is what TabPFN loads for inference (the pinned upstream file, or a reloaded bundle's
+    ``model.safetensors``); ``checkpoint_path`` is the authentic foundation checkpoint that ``save_artifact`` copies and
+    converts (a reloaded bundle's digest-checked ``model.ckpt``). ``None`` means ``weights_path`` is that checkpoint."""
 
     weights_path: Path
     device: str = "cpu"
@@ -688,6 +692,7 @@ class TabPFNRegressorPipeline:
     target_column: str | None = None
     feature_columns: list[str] | None = None
     target_stats: dict[str, float] | None = None
+    checkpoint_path: Path | None = None
     _model: Any = None
 
     @classmethod
@@ -741,8 +746,15 @@ class TabPFNRegressorPipeline:
 
     def save_artifact(self, artifact_dir: str | Path, *, saver: Callable[[Any, Path], None] | None = None, converter: Callable[[Path, Path], dict[str, Any]] | None = None) -> dict[str, Any]:
         """Write ``model.tabpfn_fit`` + ``model.ckpt`` (byte copy of the verified checkpoint) + ``model.safetensors`` (its
-        faithful conversion, proven tensor-for-tensor on export) + ``artifact_manifest.json``."""
+        faithful conversion, proven tensor-for-tensor on export) + ``artifact_manifest.json``.
+
+        The copy and the conversion always start from the authentic foundation checkpoint (``checkpoint_path``, else
+        ``weights_path``), never from a reloaded bundle's ``model.safetensors``; it must be the pinned upstream file."""
         model = self._require()
+        checkpoint = Path(self.checkpoint_path or self.weights_path)
+        digest = sha256_file(checkpoint)
+        if digest != WEIGHTS_SHA256:
+            raise ValueError(f"refusing to export: foundation checkpoint {checkpoint} has SHA-256 {digest}, not the pinned {WEIGHTS_FILE} ({WEIGHTS_SHA256}); {CHECKPOINT_NAME} must be a byte copy of the pinned upstream checkpoint (ARTIFACT_SPEC SER9 (b))")
         root = Path(artifact_dir)
         root.mkdir(parents=True, exist_ok=True)
         if saver is None:
@@ -753,7 +765,7 @@ class TabPFNRegressorPipeline:
                 save_fitted_tabpfn_model(estimator, path)
 
         saver(model, root / FITTED_NAME)
-        shutil.copyfile(self.weights_path, root / CHECKPOINT_NAME)
+        shutil.copyfile(checkpoint, root / CHECKPOINT_NAME)
         checkpoint_sha256 = sha256_file(root / CHECKPOINT_NAME)
         conversion = (converter or convert_checkpoint_to_safetensors)(root / CHECKPOINT_NAME, root / SAFETENSORS_NAME)
         read_safetensors_header(root / SAFETENSORS_NAME)
@@ -785,7 +797,8 @@ class TabPFNRegressorPipeline:
 
         The weights are loaded from ``model.safetensors`` (TabPFN reads a ``.safetensors`` ``model_path`` without
         unpickling anything); ``model.ckpt`` is only digest-checked. A bundle exported before the conversion existed
-        (``require_safetensors=False``) falls back to the digest-checked ``model.ckpt``."""
+        (``require_safetensors=False``) falls back to the digest-checked ``model.ckpt``. Either way ``checkpoint_path``
+        keeps the bundle's ``model.ckpt``, so the reloaded pipeline re-exports the authentic checkpoint."""
         root = Path(artifact_dir)
         manifest = validate_artifact_bundle(root, expected_fitted_sha256=expected_fitted_sha256, expected_checkpoint_sha256=expected_checkpoint_sha256, require_safetensors=require_safetensors)
         if device is None:
@@ -798,13 +811,13 @@ class TabPFNRegressorPipeline:
             def loader(fitted: Path, dev: str) -> Any:
                 return load_fitted_tabpfn_model(fitted, device=dev)
 
-        checkpoint = root / (manifest.get("safetensorsWeights") or manifest["foundationCheckpoint"])
+        weights = root / (manifest.get("safetensorsWeights") or manifest["foundationCheckpoint"])
         with tempfile.TemporaryDirectory() as temp_dir:
-            rewritten = rewrite_model_path(root / manifest["fittedEstimator"], checkpoint, Path(temp_dir) / FITTED_NAME)
+            rewritten = rewrite_model_path(root / manifest["fittedEstimator"], weights, Path(temp_dir) / FITTED_NAME)
             model = loader(rewritten, device)
         if not hasattr(model, "predict"):
             raise RuntimeError("reconstructed estimator has no predict method")
-        return cls(weights_path=checkpoint, device=device, source="artifact", n_estimators=int(manifest.get("nEstimators", DEFAULT_N_ESTIMATORS)), random_state=int(manifest.get("randomState", DEFAULT_SEED)), target_column=manifest["targetColumn"], feature_columns=list(manifest["featureColumns"]), target_stats=dict(manifest.get("targetStats") or {}), _model=model)
+        return cls(weights_path=weights, checkpoint_path=root / manifest["foundationCheckpoint"], device=device, source="artifact", n_estimators=int(manifest.get("nEstimators", DEFAULT_N_ESTIMATORS)), random_state=int(manifest.get("randomState", DEFAULT_SEED)), target_column=manifest["targetColumn"], feature_columns=list(manifest["featureColumns"]), target_stats=dict(manifest.get("targetStats") or {}), _model=model)
 
 
 # --------------------------------------------------------------------------- evaluation report (EVAL21)

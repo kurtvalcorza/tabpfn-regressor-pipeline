@@ -60,10 +60,24 @@ def fake_saver(model: FakeRegressor, path: Path) -> None:
         archive.writestr("pad.bin", b"\0" * 2048)
 
 
+def fake_loader(fitted: Path, device: str) -> FakeRegressor:
+    with zipfile.ZipFile(fitted) as zf:
+        params = json.loads(zf.read("init_params.json"))
+    model = FakeRegressor()
+    model.mean_ = params["mean"]
+    return model
+
+
+def pin_checkpoint(monkeypatch: pytest.MonkeyPatch, checkpoint: Path) -> None:
+    """Test seam: treat ``checkpoint`` as the pinned upstream file (``save_artifact`` refuses any other)."""
+    monkeypatch.setattr(api, "WEIGHTS_SHA256", api.sha256_file(checkpoint))
+
+
 @pytest.fixture()
-def bundle(tmp_path: Path) -> Path:
+def bundle(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     checkpoint = tmp_path / "upstream.ckpt"
     checkpoint.write_bytes(b"c" * 4096)
+    pin_checkpoint(monkeypatch, checkpoint)
     frame = pd.DataFrame({"a": [1.0, 2.0, 3.0, 4.0], "b": [0.0, 1.0, 0.0, 1.0]})
     pipe = api.TabPFNRegressorPipeline(weights_path=checkpoint).fit(frame, [1.0, 2.0, 3.0, 4.0], estimator_factory=FakeRegressor)
     art = tmp_path / "artifact"
@@ -199,6 +213,54 @@ def test_bundle_zip_carries_the_safetensors_member_and_reload_uses_it(bundle: Pa
     assert Path(seen["model_path"]).name == api.SAFETENSORS_NAME and reloaded.weights_path.name == api.SAFETENSORS_NAME
 
 
+def _legacy(art: Path) -> Path:
+    """Turn ``art`` into a pre-conversion bundle like the pinned v1 sample: no ``model.safetensors``."""
+    path = art / api.ARTIFACT_MANIFEST_NAME
+    manifest = json.loads(path.read_text(encoding="utf-8"))
+    for key in ("safetensorsWeights", "safetensorsWeightsSha256", "safetensorsConversion"):
+        manifest.pop(key)
+    path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+    (art / api.SAFETENSORS_NAME).unlink()
+    return art
+
+
+def test_a_reloaded_bundle_reexports_the_authentic_checkpoint(bundle: Path, tmp_path: Path) -> None:
+    reloaded = api.TabPFNRegressorPipeline.from_artifact(bundle, device="cpu", loader=fake_loader)
+    again = tmp_path / "again"
+    manifest = reloaded.save_artifact(again, saver=fake_saver, converter=fake_converter)
+    assert api.sha256_file(again / api.CHECKPOINT_NAME) == api.sha256_file(bundle / api.CHECKPOINT_NAME) == api.WEIGHTS_SHA256
+    assert (again / api.SAFETENSORS_NAME).read_bytes() == (bundle / api.SAFETENSORS_NAME).read_bytes()
+    assert manifest["foundationCheckpointSha256"] == api.WEIGHTS_SHA256
+    api.validate_artifact_bundle(again)
+    assert reloaded.weights_path.name == api.SAFETENSORS_NAME and reloaded.checkpoint_path == bundle / api.CHECKPOINT_NAME
+
+
+def test_a_reloaded_legacy_bundle_reexports_its_checkpoint(bundle: Path, tmp_path: Path) -> None:
+    legacy = _legacy(bundle)
+    with pytest.raises(ValueError, match="safetensorsWeights"):
+        api.TabPFNRegressorPipeline.from_artifact(legacy, device="cpu", loader=fake_loader)
+    reloaded = api.TabPFNRegressorPipeline.from_artifact(legacy, device="cpu", loader=fake_loader, require_safetensors=False)
+    again = tmp_path / "again"
+    reloaded.save_artifact(again, saver=fake_saver, converter=fake_converter)
+    assert api.sha256_file(again / api.CHECKPOINT_NAME) == api.sha256_file(legacy / api.CHECKPOINT_NAME) == api.WEIGHTS_SHA256
+    api.validate_artifact_bundle(again)  # the re-export is a full SER9 (b) bundle
+    assert reloaded.weights_path == reloaded.checkpoint_path == legacy / api.CHECKPOINT_NAME
+
+
+def test_export_refuses_a_checkpoint_that_is_not_the_pinned_one(bundle: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    other = tmp_path / "other.ckpt"
+    other.write_bytes(b"d" * 4096)
+    frame = pd.DataFrame({"a": [1.0, 2.0, 3.0, 4.0]})
+    pipe = api.TabPFNRegressorPipeline(weights_path=other).fit(frame, [1.0, 2.0, 3.0, 4.0], estimator_factory=FakeRegressor)
+    with pytest.raises(ValueError, match="not the pinned"):
+        pipe.save_artifact(tmp_path / "fresh", saver=fake_saver, converter=fake_converter)
+    assert not (tmp_path / "fresh").exists()
+    reloaded = api.TabPFNRegressorPipeline.from_artifact(bundle, device="cpu", loader=fake_loader)
+    monkeypatch.setattr(api, "WEIGHTS_SHA256", "0" * 64)
+    with pytest.raises(ValueError, match="not the pinned"):
+        reloaded.save_artifact(tmp_path / "again", saver=fake_saver, converter=fake_converter)
+
+
 def test_plain_data_refuses_live_objects() -> None:
     assert api._plain_data({"t": (None, "safepower"), "n": [1, 2.5, True]}, "x") == {"t": [None, "safepower"], "n": [1, 2.5, True]}
     with pytest.raises(ValueError, match="not plain data"):
@@ -260,9 +322,10 @@ def test_conversion_bytes_are_reproducible_across_interpreters(tmp_path: Path) -
 
 
 @pytest.mark.integration
-def test_verification_refuses_a_conversion_that_disagrees_with_the_checkpoint(tmp_path: Path) -> None:
+def test_verification_refuses_a_conversion_that_disagrees_with_the_checkpoint(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     ckpt, other, out = tmp_path / "model.ckpt", tmp_path / "other.ckpt", tmp_path / "model.safetensors"
     _synthetic_checkpoint(ckpt)
+    pin_checkpoint(monkeypatch, ckpt)
     _synthetic_checkpoint(other, scale=2.0)
     api.convert_checkpoint_to_safetensors(other, out)
     with pytest.raises(ValueError, match="values differ"):
@@ -295,6 +358,7 @@ def test_real_tabpfn_reloads_from_safetensors_without_torch_load(tmp_path: Path,
     reference = np.asarray(model.predict(x[80:]), dtype=float)
     ckpt = tmp_path / "upstream.ckpt"
     save_tabpfn_model(model, ckpt)
+    pin_checkpoint(monkeypatch, ckpt)
     pipe = api.TabPFNRegressorPipeline(weights_path=ckpt, device="cpu", n_estimators=2, random_state=0, target_column="target", feature_columns=["a", "b", "c"], target_stats={"mean": 0.0}, _model=model)
     art = tmp_path / "artifact"
     pipe.save_artifact(art)
@@ -315,3 +379,28 @@ def test_real_tabpfn_reloads_from_safetensors_without_torch_load(tmp_path: Path,
     reloaded = api.TabPFNRegressorPipeline.from_artifact(art, device="cpu")
     assert reloaded.weights_path.name == api.SAFETENSORS_NAME and opened == []
     assert np.max(np.abs(reloaded.predict_values(x[80:]) - reference)) < 1e-5
+
+
+@pytest.mark.integration
+def test_a_reloaded_bundle_reexports_through_the_real_converter(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    ckpt = tmp_path / "upstream.ckpt"
+    _synthetic_checkpoint(ckpt)
+    pin_checkpoint(monkeypatch, ckpt)
+    frame = pd.DataFrame({"a": [1.0, 2.0, 3.0, 4.0]})
+    pipe = api.TabPFNRegressorPipeline(weights_path=ckpt).fit(frame, [1.0, 2.0, 3.0, 4.0], estimator_factory=FakeRegressor)
+    art = tmp_path / "artifact"
+    pipe.save_artifact(art, saver=fake_saver)
+    reloaded = api.TabPFNRegressorPipeline.from_artifact(art, device="cpu", loader=fake_loader)
+    again = tmp_path / "again"
+    reloaded.save_artifact(again, saver=fake_saver)  # torch.load(weights_only=True) of the authentic model.ckpt
+    assert api.sha256_file(again / api.CHECKPOINT_NAME) == api.sha256_file(ckpt) == api.WEIGHTS_SHA256
+    assert (again / api.SAFETENSORS_NAME).read_bytes() == (art / api.SAFETENSORS_NAME).read_bytes()
+    api.validate_artifact_bundle(again, verify_conversion=True)
+    # legacy (pre-conversion) bundle: weights come from model.ckpt and the re-export gains the conversion
+    legacy = _legacy(art)
+    reloaded = api.TabPFNRegressorPipeline.from_artifact(legacy, device="cpu", loader=fake_loader, require_safetensors=False)
+    third = tmp_path / "third"
+    reloaded.save_artifact(third, saver=fake_saver)
+    assert api.sha256_file(third / api.CHECKPOINT_NAME) == api.WEIGHTS_SHA256
+    assert (third / api.SAFETENSORS_NAME).read_bytes() == (again / api.SAFETENSORS_NAME).read_bytes()
+    api.validate_artifact_bundle(third, verify_conversion=True)
