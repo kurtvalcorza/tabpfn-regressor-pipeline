@@ -270,3 +270,28 @@ The files below were committed with local absolute paths in them. Each local run
 | `docs/execution-evidence/2026-10-10/tabpfn_regressor_colab_e2d5fab_colab-cli-t4_exec.log` | 2 | `18c70aa252bde3b3a2501f0a5fd2d7422818b0c17619bdb2cb01ec69ac3e5b5d` | `1fcc4e05d7778185dc62b57283924030a56fb41f1dbdd0915abc75e5e883e507` |
 
 The Recorded executions table above quotes the pre-redaction hash of 2 of these logs as the hash of the committed file. Those quotes are kept as recorded, and the post-redaction hash is noted beside each one.
+
+## Bundle gains `model.safetensors` (ARTIFACT_SPEC 2.0 SER9 (b), 2026-10-24)
+
+From this change on, `save_artifact` writes a fourth member, `model.safetensors`: the tensors of the upstream
+checkpoint byte copy `model.ckpt`, converted to `safetensors` (same names, dtypes, shapes and values; every other
+checkpoint entry is plain data and goes in the header metadata as sorted compact JSON, one key per entry, in the layout
+`tabpfn` 8.1.0 loads natively). The export proves the conversion tensor for tensor (SER8) and records it in
+`artifact_manifest.json` (`safetensorsWeights`, `safetensorsWeightsSha256`, `safetensorsConversion` with `derived_from`
+the `model.ckpt` digest, the tool and its version). `validate_artifact_bundle` refuses a bundle without it, and the reload
+takes the foundation weights from it instead of unpickling `model.ckpt`.
+
+The pinned sample artifact `sample-artifact-synthetic-v1` (above) predates this: it holds only `artifact_manifest.json`,
+`model.ckpt` and `model.tabpfn_fit`. Section 10 accepts it as the one three-member artifact
+(`SAMPLE_ARTIFACT_PREDATES_SAFETENSORS` in `tools/tutorial_stages.py`) and loads its weights from its digest-checked
+`model.ckpt`; an artifact of the learner's own must carry `model.safetensors`. A new sample artifact, exported by a
+**recorded hosted run** of the current notebook's default path, must be published under a new tag and pinned (SART7,
+SART8, SART11), after which the flag becomes `False`. That run has not been made, and no clean-runtime evidence of this
+change exists yet.
+
+Local checks only (Windows, CPU, not clean-runtime evidence): converting the pinned checkpoint
+`tabpfn-v3-regressor-v3_default.ckpt` gave 504 float32 tensors (233,119,780 tensor bytes) in a 233,185,724-byte file with
+SHA-256 `78ce65f8f859bddc68589e685e61ed413cb5f941f5fa713abd4563e5d136530f`, identical in two fresh interpreters; a
+TabPFN regressor fitted on the pinned checkpoint, exported and reloaded from `model.safetensors` predicted identically
+(maximum absolute difference 0.0). The export ZIP grows by roughly the size of the new member (inferred: float32 weights
+barely compress), which stays under the section's 512 MiB download ceiling.

@@ -29,6 +29,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
+from test_safetensors_bundle import fake_converter
+
 ROOT = Path(__file__).resolve().parents[1]
 TOOLS = ROOT / "tools"
 E2E = ROOT / "tutorials" / "tabpfn_regressor_colab.ipynb"
@@ -162,10 +164,11 @@ class _Estimator:
         return np.full(len(X), 1.5)
 
 
-def _standin(tmp_path: Path, P, monkeypatch, *, features: list[str] | None = None) -> tuple[Path, str]:
-    """A three-member artifact with a stand-in fitted archive and checkpoint; the package's pinned checkpoint digest is
+def _standin(tmp_path: Path, P, monkeypatch, *, features: list[str] | None = None, safetensors: bool = False) -> tuple[Path, str]:
+    """A stand-in artifact (fitted archive, checkpoint, and with ``safetensors`` a stand-in ``model.safetensors``: four
+    members; without it the three members of the pinned v1 sample); the package's pinned checkpoint digest is
     overridden (test only) to the stand-in checkpoint's, so ``validate_artifact_bundle`` runs unchanged."""
-    art = tmp_path / "standin-artifact"
+    art = tmp_path / ("standin-artifact-st" if safetensors else "standin-artifact")
     art.mkdir()
     with zipfile.ZipFile(art / P.FITTED_NAME, "w") as fitted:
         fitted.writestr("init_params.json", json.dumps({"model_path": "/producer/model.ckpt"}))
@@ -181,8 +184,11 @@ def _standin(tmp_path: Path, P, monkeypatch, *, features: list[str] | None = Non
         "baseModel": {"modelId": P.MODEL_ID, "revision": P.MODEL_REVISION, "file": P.WEIGHTS_FILE, "sha256": ckpt_sha}, "mode": "zero-shot-icl",
         "nEstimators": 4, "randomState": 42, "featureKinds": {c: ("categorical" if c == "category" else "numeric") for c in features},
     }
+    if safetensors:
+        fake_converter(art / P.CHECKPOINT_NAME, art / P.SAFETENSORS_NAME)
+        manifest.update(safetensorsWeights=P.SAFETENSORS_NAME, safetensorsWeightsSha256=hashlib.sha256((art / P.SAFETENSORS_NAME).read_bytes()).hexdigest(), safetensorsConversion={"derived_from": {"file": P.CHECKPOINT_NAME, "sha256": ckpt_sha}, "tool": "fake", "toolVersion": "0", "ser9Clause": "b"})
     (art / P.ARTIFACT_MANIFEST_NAME).write_text(json.dumps(manifest), encoding="utf-8")
-    zip_path = tmp_path / "tabpfn_regressor_artifact.zip"
+    zip_path = tmp_path / ("own_artifact.zip" if safetensors else "tabpfn_regressor_artifact.zip")
     P.zip_artifact_bundle(art, zip_path)
     original = P.TabPFNRegressorPipeline.from_artifact.__func__
     monkeypatch.setattr(P.TabPFNRegressorPipeline, "from_artifact", classmethod(functools.partial(original, loader=lambda fitted, device: _Estimator())))
@@ -233,19 +239,25 @@ def test_members_are_checked_before_extraction(tmp_path, monkeypatch) -> None:
     """A ZIP with notes.txt, or with sub/model.ckpt that flattening would let overwrite model.ckpt, is refused."""
     P = STAGES.package(_root(tmp_path))
     good, _fitted = _standin(tmp_path, P, monkeypatch)
-    assert STAGES.check_members(P, good) == sorted([P.ARTIFACT_MANIFEST_NAME, P.FITTED_NAME, P.CHECKPOINT_NAME])
+    assert STAGES.check_members(P, good, legacy=True) == sorted([P.ARTIFACT_MANIFEST_NAME, P.FITTED_NAME, P.CHECKPOINT_NAME])
+    with pytest.raises(ValueError, match=r"missing=\['model\.safetensors'\]"):
+        STAGES.check_members(P, good)  # only the pinned v1 sample may lack model.safetensors
+    four, _ = _standin(tmp_path, P, monkeypatch, safetensors=True)
+    assert STAGES.check_members(P, four) == sorted([P.ARTIFACT_MANIFEST_NAME, P.FITTED_NAME, P.CHECKPOINT_NAME, P.SAFETENSORS_NAME])
+    with pytest.raises(ValueError, match=r"unexpected=\['model\.safetensors'\]"):
+        STAGES.check_members(P, four, legacy=True)
     extra = tmp_path / "extra.zip"
     shutil.copyfile(good, extra)
     with zipfile.ZipFile(extra, "a") as archive:
         archive.writestr("notes.txt", "x")
     with pytest.raises(ValueError, match=r"unexpected=\['notes\.txt'\]"):
-        STAGES.check_members(P, extra)
+        STAGES.check_members(P, extra, legacy=True)
     nested = tmp_path / "nested.zip"
     shutil.copyfile(good, nested)
     with zipfile.ZipFile(nested, "a") as archive:
         archive.writestr("sub/model.ckpt", b"evil")
     with pytest.raises(ValueError, match=r"\['model\.ckpt'\] occur more than once"):
-        STAGES.check_members(P, nested)
+        STAGES.check_members(P, nested, legacy=True)
 
 
 def test_artifact_from_another_dataset_breaks_the_data_contract(tmp_path) -> None:
@@ -399,3 +411,21 @@ def test_st1_real_notebook_passes_the_validator() -> None:
     runner = VALIDATOR.carried_runner(E2E)
     assert VALIDATOR.disallowed_own_references(runner, (VALIDATOR.PINNED_SAMPLE_ARTIFACT_URL,)) == []
     VALIDATOR.validate_notebooks()
+
+
+def test_own_artifact_must_carry_safetensors_and_loads_from_it(tmp_path, monkeypatch) -> None:
+    """SER9 (b): an artifact of your own is refused without model.safetensors; with it, the stage records that the
+    weights load from model.safetensors (the pinned v1 sample is the only three-member artifact accepted)."""
+    _cpu(monkeypatch)
+    root = _root(tmp_path)
+    P = STAGES.package(root)
+    three, _ = _standin(tmp_path, P, monkeypatch)
+    run = STAGES.Run(root, tmp_path / "outputs", tmp_path / "weights", {"source": "own", "zip_path": str(three), "expected_zip_sha256": hashlib.sha256(three.read_bytes()).hexdigest()})
+    with pytest.raises(STAGES.Refused, match="model.safetensors"):
+        _quiet(STAGES.stage_external_artifact, run)
+    four, _ = _standin(tmp_path, P, monkeypatch, safetensors=True)
+    run.options = {"source": "own", "zip_path": str(four), "expected_zip_sha256": hashlib.sha256(four.read_bytes()).hexdigest()}
+    _quiet(STAGES.stage_external_artifact, run)
+    record = json.loads((run.state / "external_artifact.json").read_text())
+    assert record["weights_source"] == P.SAFETENSORS_NAME and "safetensorsWeights" in record["verifiedSha256"]
+    assert P.SAFETENSORS_NAME in record["members"]

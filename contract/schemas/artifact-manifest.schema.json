@@ -2,12 +2,17 @@
   "$schema":"https://json-schema.org/draft/2020-12/schema",
   "$id":"https://dimer.local/contracts/tabpfn-regressor/artifact-manifest-v1",
   "type":"object","additionalProperties":true,
+  "dependentRequired":{"safetensorsWeights":["safetensorsWeightsSha256","safetensorsConversion"]},
   "required":["schemaVersion","taskType","targetColumn","featureColumns","fittedEstimator","fittedEstimatorSha256","foundationCheckpoint","foundationCheckpointSha256","portableLoader"],
   "properties":{
     "schemaVersion":{"const":1},"contractVersion":{"type":"integer","minimum":1},"taskType":{"const":"tabular_regression"},
     "targetColumn":{"type":"string","minLength":1},"featureColumns":{"type":"array","items":{"type":"string"},"minItems":1},
     "fittedEstimator":{"type":"string","minLength":1},"fittedEstimatorSha256":{"type":"string","pattern":"^[0-9a-f]{64}$"},
     "foundationCheckpoint":{"type":"string","minLength":1},"foundationCheckpointSha256":{"type":"string","pattern":"^[0-9a-f]{64}$"},
-    "portableLoader":{"type":"string","minLength":1}
+    "portableLoader":{"type":"string","minLength":1},
+    "safetensorsWeights":{"const":"model.safetensors"},"safetensorsWeightsSha256":{"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "safetensorsConversion":{"type":"object","required":["derived_from","tool","toolVersion"],"properties":{
+      "derived_from":{"type":"object","required":["file","sha256"],"properties":{"file":{"type":"string","minLength":1},"sha256":{"type":"string","pattern":"^[0-9a-f]{64}$"}}},
+      "tool":{"type":"string","minLength":1},"toolVersion":{"type":"string","minLength":1},"ser9Clause":{"const":"b"}}}
   }
 }
