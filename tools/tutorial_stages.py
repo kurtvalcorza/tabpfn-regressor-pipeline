@@ -69,6 +69,10 @@ SAMPLE_ARTIFACT_PRODUCER = {
     "release_tag": SAMPLE_ARTIFACT_TAG,
 }
 SAMPLE_ARTIFACT_MAX_BYTES = 512 * 1024 * 1024  # a download larger than this is refused before it is hashed or opened
+# The v1 sample was exported before the bundle carried model.safetensors (ARTIFACT_SPEC 2.0 SER9 (b)); it is the only
+# artifact accepted without one, and loads from its digest-checked model.ckpt. A sample exported by a recorded hosted
+# run of the current notebook gets a new tag and pin, and this flag becomes False (docs/release-verification.md).
+SAMPLE_ARTIFACT_PREDATES_SAFETENSORS = True
 EXTERNAL_DIR = "external_artifact"  # under outputs/: the section's predictions and provenance (XAS6)
 EXTERNAL_SAMPLE_ROWS = 8
 SHA256_HEX = re.compile(r"^[0-9a-f]{64}$")
@@ -493,7 +497,7 @@ def stage_export(run: Run) -> None:
     if manifest["foundationCheckpointSha256"] != P.WEIGHTS_SHA256:
         raise RuntimeError("the bundled checkpoint is not the pinned foundation checkpoint")
     run.write_state("export_reference.json", {"predictions": np.asarray(pipe.predict_values(val[v["features"]]), dtype=float).tolist(), "mae": run.read_state("condition.json", "export")["validation"]["mae"], "device": pipe.device})
-    record = {"artifact": sorted(p.name for p in art.iterdir()), "fittedEstimatorSha256": manifest["fittedEstimatorSha256"], "foundationCheckpointSha256": manifest["foundationCheckpointSha256"], "bundle_zip": zip_path.name, "bundle_zip_sha256": zip_sha}
+    record = {"artifact": sorted(p.name for p in art.iterdir()), "fittedEstimatorSha256": manifest["fittedEstimatorSha256"], "foundationCheckpointSha256": manifest["foundationCheckpointSha256"], "safetensorsWeightsSha256": manifest["safetensorsWeightsSha256"], "safetensorsDerivedFrom": manifest["safetensorsConversion"]["derived_from"]["sha256"], "bundle_zip": zip_path.name, "bundle_zip_sha256": zip_sha}
     print(record)
     print(f"Trusted digests of this export: whoever loads {zip_path.name} elsewhere checks EXPECTED_ZIP_SHA256 = '{zip_sha}' and EXPECTED_FITTED_SHA256 = '{manifest['fittedEstimatorSha256']}'. Section 10 never loads this run's export; it loads the pinned sample artifact.")
     run.write_state("export.json", record)
@@ -679,10 +683,11 @@ def fetch_pinned_artifact(cache: Path, url: str, expected: str) -> Path:
     return cache
 
 
-def check_members(P, zip_path: Path) -> list[str]:
-    """The ZIP must hold exactly the three bundle members, each once, at the top level; anything else (an extra file, a
-    sub-directory copy that would overwrite a member when flattened) is refused before extraction."""
-    expected = {P.ARTIFACT_MANIFEST_NAME, P.FITTED_NAME, P.CHECKPOINT_NAME}
+def check_members(P, zip_path: Path, *, legacy: bool = False) -> list[str]:
+    """The ZIP must hold exactly the four bundle members, each once, at the top level; anything else (an extra file, a
+    sub-directory copy that would overwrite a member when flattened) is refused before extraction. ``legacy`` accepts
+    the three members of a bundle exported before ``model.safetensors`` existed (only the pinned v1 sample)."""
+    expected = {P.ARTIFACT_MANIFEST_NAME, P.FITTED_NAME, P.CHECKPOINT_NAME} | (set() if legacy else {P.SAFETENSORS_NAME})
     with zipfile.ZipFile(zip_path) as archive:
         names = [info.filename for info in archive.infolist() if not info.is_dir()]
     bare = [PurePosixPath(n.replace("\\", "/")).name for n in names]
@@ -785,11 +790,12 @@ def stage_external_artifact(run: Run) -> None:
     bundle = run.state / "external_bundle"
     shutil.rmtree(bundle, ignore_errors=True)
     expected_fitted = ""
+    legacy = source == "pinned" and SAMPLE_ARTIFACT_PREDATES_SAFETENSORS
     if source == "pinned":
         if not SHA256_HEX.match(SAMPLE_ARTIFACT_SHA256) or not SHA256_HEX.match(SAMPLE_ARTIFACT_FITTED_SHA256):
             raise RuntimeError("The pinned sample artifact is not published yet (SAMPLE_ARTIFACT_SHA256 is a placeholder): nothing is downloaded. Use your own artifact (ARTIFACT_SOURCE) or regenerate the notebook once the pin exists.")
         # SART3: provenance, format and integrity mechanism, stated before anything is downloaded or deserialised.
-        print({"artifact": "pinned sample artifact (created outside this run)", "url": SAMPLE_ARTIFACT_URL, "pinned_sha256": SAMPLE_ARTIFACT_SHA256, "bytes": SAMPLE_ARTIFACT_BYTES, "pinned_fitted_sha256": SAMPLE_ARTIFACT_FITTED_SHA256, "producer": SAMPLE_ARTIFACT_PRODUCER, "format": f"artifact_manifest.json schemaVersion {P.ARTIFACT_SCHEMA_VERSION} + {P.FITTED_NAME} + {P.CHECKPOINT_NAME}", "integrity": "SHA-256 of the whole ZIP, checked before extraction; then the member list, the fitted archive against its pinned digest, and the checkpoint against the pinned base model"})
+        print({"artifact": "pinned sample artifact (created outside this run)", "url": SAMPLE_ARTIFACT_URL, "pinned_sha256": SAMPLE_ARTIFACT_SHA256, "bytes": SAMPLE_ARTIFACT_BYTES, "pinned_fitted_sha256": SAMPLE_ARTIFACT_FITTED_SHA256, "producer": SAMPLE_ARTIFACT_PRODUCER, "format": f"artifact_manifest.json schemaVersion {P.ARTIFACT_SCHEMA_VERSION} + {P.FITTED_NAME} + {P.CHECKPOINT_NAME}" + ("" if legacy else f" + {P.SAFETENSORS_NAME}") + (" (exported before the bundle carried model.safetensors; weights load from the digest-checked model.ckpt)" if legacy else ""), "integrity": "SHA-256 of the whole ZIP, checked before extraction; then the member list, the fitted archive against its pinned digest, and the checkpoint against the pinned base model"})
         zip_path = fetch_pinned_artifact(run.root / "inputs" / "external_artifact.zip", SAMPLE_ARTIFACT_URL, SAMPLE_ARTIFACT_SHA256)
         expected_fitted = SAMPLE_ARTIFACT_FITTED_SHA256
         trust = {"trusted_digest": "verified (pinned SAMPLE_ARTIFACT_SHA256 and SAMPLE_ARTIFACT_FITTED_SHA256)", "zip_sha256": SAMPLE_ARTIFACT_SHA256, "url": SAMPLE_ARTIFACT_URL, "producer": SAMPLE_ARTIFACT_PRODUCER}
@@ -811,9 +817,9 @@ def stage_external_artifact(run: Run) -> None:
     else:
         raise ValueError(f"ARTIFACT_SOURCE must be the pinned sample or your own ZIP, got {source!r}")
     try:
-        members = check_members(P, zip_path)
+        members = check_members(P, zip_path, legacy=legacy)
         P.safe_extract_zip(zip_path, bundle)
-        artifact = P.validate_artifact_bundle(bundle, expected_fitted_sha256=expected_fitted, expected_checkpoint_sha256=P.WEIGHTS_SHA256)
+        artifact = P.validate_artifact_bundle(bundle, expected_fitted_sha256=expected_fitted, expected_checkpoint_sha256=P.WEIGHTS_SHA256, require_safetensors=not legacy)
         manifest = {k: v for k, v in artifact.items() if k not in ("verifiedSha256", "recordedModelPath")}
         binding = check_base_model(P, manifest)
     except (ValueError, RuntimeError, FileNotFoundError, zipfile.BadZipFile) as exc:
@@ -825,9 +831,9 @@ def stage_external_artifact(run: Run) -> None:
     if source == "pinned":
         contract = synthetic_contract(run, P)
         check_data_contract(manifest, contract)
-    record = {"source": source, "zip": zip_path.name, **trust, **binding, "members": members, "bundle": str(bundle), "manifest": manifest, "verifiedSha256": artifact["verifiedSha256"], "data_contract": "synthetic default path (task, features, target and feature kinds match)" if contract else "not checked (your own artifact; your rows must follow its manifest)"}
+    record = {"source": source, "zip": zip_path.name, **trust, **binding, "members": members, "weights_source": P.CHECKPOINT_NAME if legacy else P.SAFETENSORS_NAME, "bundle": str(bundle), "manifest": manifest, "verifiedSha256": artifact["verifiedSha256"], "data_contract": "synthetic default path (task, features, target and feature kinds match)" if contract else "not checked (your own artifact; your rows must follow its manifest)"}
     run.write_state("external_artifact.json", record)
-    print({k: record[k] for k in ("source", "zip", "zip_sha256", "trusted_digest", "mode", "checkpoint_binding", "data_contract")})
+    print({k: record[k] for k in ("source", "zip", "zip_sha256", "trusted_digest", "mode", "checkpoint_binding", "weights_source", "data_contract")})
     print({"schemaVersion": manifest.get("schemaVersion"), "taskType": manifest.get("taskType"), "baseModel": manifest.get("baseModel"), "nEstimators": manifest.get("nEstimators"), "randomState": manifest.get("randomState"), "fittedEstimatorSha256": artifact["verifiedSha256"]["fittedEstimator"], "foundationCheckpointSha256": artifact["verifiedSha256"]["foundationCheckpoint"]})
     print({"featureColumns": manifest["featureColumns"], "targetColumn": manifest["targetColumn"], "targetStats": rounded(manifest.get("targetStats"), 3), "featureKinds": manifest.get("featureKinds")})
 
@@ -840,7 +846,7 @@ def external_serving(run: Run):
     P = package(run.root)
     art = run.read_state("external_artifact.json", "external_reconstruct")
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    serving = P.TabPFNRegressorPipeline.from_artifact(Path(art["bundle"]), device=device, expected_fitted_sha256=art["verifiedSha256"]["fittedEstimator"], expected_checkpoint_sha256=P.WEIGHTS_SHA256)
+    serving = P.TabPFNRegressorPipeline.from_artifact(Path(art["bundle"]), device=device, expected_fitted_sha256=art["verifiedSha256"]["fittedEstimator"], expected_checkpoint_sha256=P.WEIGHTS_SHA256, require_safetensors=art.get("weights_source") != P.CHECKPOINT_NAME)
     manifest = art["manifest"]
     if serving.target_column != manifest["targetColumn"] or serving.feature_columns != list(manifest["featureColumns"]):
         raise RuntimeError("Reconstructed estimator disagrees with the validated manifest.")

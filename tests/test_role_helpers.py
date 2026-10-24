@@ -11,6 +11,7 @@ import pandas as pd
 import pytest
 
 from tabpfn_regressor_pipeline import pipeline as api
+from test_safetensors_bundle import fake_converter
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -47,7 +48,7 @@ def fake_loader(fitted: Path, device: str) -> FakeRegressor:
     with zipfile.ZipFile(fitted) as archive:
         params = json.loads(archive.read("init_params.json"))
         state = json.loads(archive.read("fitted_attrs.joblib").decode("utf-8").rstrip("x"))
-    assert Path(params["model_path"]).name == api.CHECKPOINT_NAME  # rewritten to the companion checkpoint
+    assert Path(params["model_path"]).name == api.SAFETENSORS_NAME  # rewritten to the companion safetensors weights
     model = FakeRegressor()
     model.mean_ = float(state["mean"])
     model.column_ = state["column"]
@@ -236,7 +237,7 @@ def test_fit_predict_evaluate_save_and_reload(tmp_path: Path, constants: None) -
         pipe.predict(val)  # carries the target column
 
     artifact = tmp_path / "artifact"
-    manifest = pipe.save_artifact(artifact, saver=fake_saver)
+    manifest = pipe.save_artifact(artifact, saver=fake_saver, converter=fake_converter)
     assert manifest["targetStats"] == pipe.target_stats and manifest["baseModel"]["sha256"] == api.WEIGHTS_SHA256
     assert api.sha256_file(artifact / api.CHECKPOINT_NAME) == api.WEIGHTS_SHA256
     checked = api.validate_artifact_bundle(artifact)
@@ -246,11 +247,11 @@ def test_fit_predict_evaluate_save_and_reload(tmp_path: Path, constants: None) -
 
     bundle_zip = tmp_path / "bundle.zip"
     assert api.zip_artifact_bundle(artifact, bundle_zip) == api.sha256_file(bundle_zip)
-    assert sorted(api.safe_extract_zip(bundle_zip, tmp_path / "unzipped")) == sorted([api.ARTIFACT_MANIFEST_NAME, api.FITTED_NAME, api.CHECKPOINT_NAME])
+    assert sorted(api.safe_extract_zip(bundle_zip, tmp_path / "unzipped")) == sorted([api.ARTIFACT_MANIFEST_NAME, api.FITTED_NAME, api.CHECKPOINT_NAME, api.SAFETENSORS_NAME])
     assert api.validate_artifact_bundle(tmp_path / "unzipped")["targetColumn"] == "target"
     fresh = tmp_path / "fresh"
     fresh.mkdir()
-    for name in (api.FITTED_NAME, api.CHECKPOINT_NAME, api.ARTIFACT_MANIFEST_NAME):
+    for name in (api.FITTED_NAME, api.CHECKPOINT_NAME, api.SAFETENSORS_NAME, api.ARTIFACT_MANIFEST_NAME):
         (fresh / name).write_bytes((artifact / name).read_bytes())
     reloaded = api.TabPFNRegressorPipeline.from_artifact(fresh, device="cpu", loader=fake_loader)
     assert reloaded.source == "artifact" and reloaded.feature_columns == features and reloaded.target_stats == pipe.target_stats
