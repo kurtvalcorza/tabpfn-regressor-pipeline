@@ -32,8 +32,8 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 TOOLS = ROOT / "tools"
 E2E = ROOT / "tutorials" / "tabpfn_regressor_colab.ipynb"
-PINNED_URL = "https://github.com/kurtvalcorza/tabpfn-regressor-pipeline/releases/download/sample-artifact-synthetic-v1/tabpfn_regressor_artifact.zip"
-PINNED_SHA256 = "7542b7210c54d051c186675a2cc4782eb490c6ae1f098728876403be3838d388"
+PINNED_URL = "https://github.com/kurtvalcorza/tabpfn-regressor-pipeline/releases/download/sample-artifact-synthetic-v2/tabpfn_regressor_artifact.zip"
+PINNED_SHA256 = "827e55a960fabb495352859c04d1ab5f8ef098c574a84466bf148c60b1b7c7fb"
 PINNED_FITTED_SHA256 = "7ae56895348d3a9d2381841020b3c5532c9ef730331df28274912370a9a78fd3"
 SECTION_START = "## 10. Using an artifact made elsewhere"
 SECTION_END = "## 11. Optional activity"
@@ -88,9 +88,10 @@ def test_section_pins_the_release_asset_by_url_and_digests() -> None:
     assert STAGES.SAMPLE_ARTIFACT_URL == PINNED_URL
     assert STAGES.SAMPLE_ARTIFACT_SHA256 == PINNED_SHA256
     assert STAGES.SAMPLE_ARTIFACT_FITTED_SHA256 == PINNED_FITTED_SHA256
-    assert STAGES.SAMPLE_ARTIFACT_BYTES == 217007493
+    assert STAGES.SAMPLE_ARTIFACT_BYTES == 216972113
     assert STAGES.SAMPLE_ARTIFACT_PRODUCER["commit"].startswith("b32aa7c")
-    assert STAGES.SAMPLE_ARTIFACT_PRODUCER["release_tag"] == STAGES.SAMPLE_ARTIFACT_TAG == "sample-artifact-synthetic-v1"
+    assert STAGES.SAMPLE_ARTIFACT_PRODUCER["release_tag"] == STAGES.SAMPLE_ARTIFACT_TAG == "sample-artifact-synthetic-v2"
+    assert "sample-artifact-synthetic-v1" in STAGES.SAMPLE_ARTIFACT_PRODUCER["reissue"]
 
 
 def test_default_path_fetches_the_pin_and_never_this_runs_export(tmp_path, monkeypatch) -> None:
@@ -422,8 +423,8 @@ _REPO = "https://github.com/kurtvalcorza/tabpfn-regressor-pipeline"
         f"{_REPO}/releases/download/sample-artifact-synthetic-v1/tabpfn_regressor_artifact.zip#x",
         "https://github.com/kurtvalcorza/tabicl-regressor-pipeline/releases/download/sample-artifact-magic-v1/tabiclv2_regressor_artifact.zip",
         f"{_REPO}/releases/download/sample-bundle-v1/tabpfn_regressor_sample_bundle.zip",
-        f"{_REPO}/releases/download/sample-artifact-synthetic-v2/tabpfn_regressor_artifact.zip",
-        f"{_REPO}/releases/download/sample-artifact-synthetic-v1/tabpfn_regressor_artifact.zip.sig",
+        f"{_REPO}/releases/download/sample-artifact-synthetic-v1/tabpfn_regressor_artifact.zip",
+        f"{_REPO}/releases/download/sample-artifact-synthetic-v2/tabpfn_regressor_artifact.zip.sig",
         f"{_REPO}.git",
     ],
     ids=["traversal", "tag-then-traversal", "pct2e", "pct2E-uppercase-host", "query", "fragment", "other-repo", "other-tag-old-bundle", "other-tag", "suffix", "clone"],
