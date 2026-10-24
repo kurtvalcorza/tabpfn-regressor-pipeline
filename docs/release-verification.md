@@ -236,7 +236,7 @@ validation MAE 0.2935 → 0.2927, RMSE 0.3623 → 0.3638, R² 0.9948 → 0.9947 
 | `tabpfn_regressor_colab_712884e_colab-cli-t4_activity_run_copy.ipynb` | `ff664b877e3e3356bc9f09185d78ecf56d54675dd5e0287af5f4cbc5b5a8eec8` | unchanged (no local path) |
 | `tabpfn_regressor_colab_712884e_colab-cli-t4_activity_run_summary.json` | `3057ff343460f261bec4b8a6ad75e61c166d1b8b078e00d2c43f8f314d621ab3` | unchanged (no local path) |
 
-**Hosted default-path run of blob `d421385e31ae` (2026-10-24, `091b58d`, PR #31 head; safetensors serving).** Colab CLI
+**Hosted default-path run of blob `d421385e31ae` (2026-10-24, `091b58d`; the PR #31 blob, safetensors serving, history since `9e2cad9`).** Colab CLI
 `colab exec -f` (a scripted run, not a browser Run all) on a fresh Colab Tesla T4, default path of
 `tutorials/tabpfn_regressor_colab.ipynb` at `091b58d`, executed as committed, started 2026-10-24T13:08:08Z, wall 179.1 s,
 exit 0, sequential, input unchanged, 14/14 code cells, 0 errors, verdict PASS. Evidence:
@@ -260,7 +260,7 @@ skipped". The run's own export still lists `model.ckpt` in the bundle (`['artifa
 | `tabpfn_regressor_colab_091b58d_colab-cli-t4_exec.log` | `fbef6d26c635afa2e56d89aea1cd67cda96229b1dc31e3e0f56e3e4ada3613f7` | `ffa55c2741df5141ffa1d78f09b79c15440db9dc7d4e7c43c7b61f56a3b81292` (2 replacements) |
 | `tabpfn_regressor_colab_091b58d_colab-cli-t4_run_summary.json` | `b35cd1af8da2f4a29cce97e9f098df44375077ba2d2df7e2b9d7d66565c07dfb` | unchanged (no local path) |
 
-**Optional-activity run of blob `d421385e31ae` (2026-10-24, `091b58d`, `RUN_ACTIVITY = True`, PR #31 head).** A run copy
+**Optional-activity run of blob `d421385e31ae` (2026-10-24, `091b58d`, `RUN_ACTIVITY = True`; history).** A run copy
 of committed blob `d421385e` with one override, `RUN_ACTIVITY = False` → `True` (run copy blob `6cec81331155`, SHA-256
 `0bc53540712f7891e9ae6106a3be0efb0976f2f73c3e3ff5d5dafa377721b3df`; it differs from the committed blob only in that assignment
 literal and is committed beside the evidence as `…_activity_run_copy.ipynb`), run by Colab CLI `colab exec -f` (scripted, not a
@@ -277,6 +277,50 @@ run above. The Section 11 activity (`n_estimators` 4 → 1) printed validation M
 | `tabpfn_regressor_colab_091b58d_colab-cli-t4_activity_exec.log` | `b702575b9190bdec033ea5a142afefaaa640e9bcbf875e63b87ee7e4a5fd8131` | `ca182663f04907a546961b095c9ec52d2883cdc35388522c7afec91f5296b008` (2 replacements) |
 | `tabpfn_regressor_colab_091b58d_colab-cli-t4_activity_run_copy.ipynb` | `0bc53540712f7891e9ae6106a3be0efb0976f2f73c3e3ff5d5dafa377721b3df` | unchanged (no local path) |
 | `tabpfn_regressor_colab_091b58d_colab-cli-t4_activity_run_summary.json` | `b55f7a4787fef445e0fdc6874872aac11f1366d5c57d4a852d02ebe19b2715d6` | unchanged (no local path) |
+
+**Hosted default-path run of blob `c69447ee3bcf` (2026-10-24, `b9c7d96`, PR #32 head; bundle format v2).** Colab CLI
+`colab exec -f` (a scripted run, not a browser Run all) on a fresh Colab Tesla T4, default path of
+`tutorials/tabpfn_regressor_colab.ipynb` at `b9c7d96`, executed as committed, started 2026-10-24T13:20:10Z, wall 164.6 s,
+exit 0, sequential, input unchanged, 14/14 code cells, 0 errors, verdict PASS. Evidence:
+`docs/execution-evidence/2026-10-24-b9c7d96/`. The weights stage verified `tabpfn-v3-regressor-v3_default.ckpt` at revision
+`24a16a89d245` (`311ce18d…7301`) and printed the served model: `{'served_file': 'tabpfn-v3-regressor-v3_default.safetensors',
+'sha256': 'edff9a12e3ccd8c0d3ad11f6fdf5b5fe14e36e5a23025049f3bd9f3e4c4e332c', 'bytes': 233186068, 'converted_from':
+'tabpfn-v3-regressor-v3_default.ckpt'}`. The run's own export is a v2 bundle: `{'artifact': ['artifact_manifest.json',
+'model.safetensors', 'model.tabpfn_fit'], 'fittedEstimatorSha256': '5853928c256eb74dab683dd7367f057b2d3a5db3a9d450a2854946c42a44865b',
+'foundationCheckpointSha256': 'edff9a12e3ccd8c0d3ad11f6fdf5b5fe14e36e5a23025049f3bd9f3e4c4e332c', 'bundle_zip':
+'tabpfn_regressor_artifact.zip', 'bundle_zip_sha256': 'b2655ffe47d299140efc1e41d90522f7b4e426d1c02d7e2be22f38938b96a772'}`, so its
+foundation digest is the served conversion's. Printed: TabPFN validation MAE 0.2935 / RMSE 0.3623 / R² 0.9948, test MAE
+0.2705 / RMSE 0.3433 / R² 0.9942; standardised linear reference validation 0.2983 / 0.3665 / 0.9946, test 0.2661 / 0.3393 /
+0.9943; "Fresh-boundary verification PASSED: predictions equivalent on 90 validation rows (rtol=1e-05, atol=1e-06)", with
+`recordedModelPath` `/content/weights/tabpfn-3-regressor/tabpfn-v3-regressor-v3_default.safetensors`. Section 10 loaded the v1
+sample `sample-artifact-synthetic-v1` and reported `trusted_digest: verified (pinned SAMPLE_ARTIFACT_SHA256 and
+SAMPLE_ARTIFACT_FITTED_SHA256)` for `7542b721…`, `'bundleFormat': 'v1 (deprecated: model.ckpt)'` and `checkpoint_binding:
+identical to the pinned base checkpoint (SHA-256 checked; deprecated bundle format v1, read with weights_only=True)`; the
+activity cell printed "Optional activity skipped". Local paths were replaced by `<local-run-dir>` before the first commit:
+
+| File (under `execution-evidence/2026-10-24-b9c7d96/`) | Captured | Committed |
+|---|---|---|
+| `tabpfn_regressor_colab_b9c7d96_colab-cli-t4.ipynb` | `c5ec3a4080fedde2a02d3b2e09045ee03c1faad93dd92d4c5fa50b72dd90effd` | unchanged (no local path) |
+| `tabpfn_regressor_colab_b9c7d96_colab-cli-t4_exec.log` | `fec9cfaafafb06a568ca53764d32755068ba6dd65aa1164789f6d46084040ea8` | `9122c6295f2dd8472ebe5d04c103dc4b6ab74623012c00135b78a6ccd81c0802` (2 replacements) |
+| `tabpfn_regressor_colab_b9c7d96_colab-cli-t4_run_summary.json` | `48de54b43b13264ccf17a4c799f193218281d8c8cde6f203bac350b8e8e43584` | unchanged (no local path) |
+
+**Optional-activity run of blob `c69447ee3bcf` (2026-10-24, `b9c7d96`, `RUN_ACTIVITY = True`, PR #32 head).** A run copy
+of committed blob `c69447ee` with one override, `RUN_ACTIVITY = False` → `True` (run copy blob `49eff8f79145`, SHA-256
+`6b8f24937698670f14ada8ecaa0ebf524f960dc2e2865db5137467fd2235087a`; it differs from the committed blob only in that assignment
+literal and is committed beside the evidence as `…_activity_run_copy.ipynb`), run by Colab CLI `colab exec -f` (scripted, not a
+browser Run all) on a fresh Colab Tesla T4, started 2026-10-24T13:21:07Z, wall 158.6 s, exit 0, sequential, input (the run copy)
+unchanged, 14/14 code cells, 0 errors, verdict PASS. Evidence: `docs/execution-evidence/2026-10-24-b9c7d96-activity/`. It
+printed the same served file and digest (`edff9a12…332c`) and the same canonical metrics as the default-path run above. The
+Section 11 activity (`n_estimators` 4 → 1) printed validation MAE 0.2935 → 0.2927, RMSE 0.3623 → 0.3638, R² 0.9948 → 0.9947
+on 90 validation rows, `max_abs_prediction_change` 0.0836, `mean_abs_prediction_change` 0.0263, and
+`{'canonical_outputs_unchanged': True}`. Local paths were replaced by `<local-run-dir>` before the first commit:
+
+| File (under `execution-evidence/2026-10-24-b9c7d96-activity/`) | Captured | Committed |
+|---|---|---|
+| `tabpfn_regressor_colab_b9c7d96_colab-cli-t4_activity.ipynb` | `b7f0b6256f5a55cddf552be1224b128f6e16180e841a2c1675c17e2f09544bea` | unchanged (no local path) |
+| `tabpfn_regressor_colab_b9c7d96_colab-cli-t4_activity_exec.log` | `9ceea49ce2c9dc86ca3aa25a1b4ee15b69c760378dd36211fed42c17baa9b035` | `89714ca4c7e31d8f4b7ec3593595e0b55cf96885636048109e8af68edd246c1e` (2 replacements) |
+| `tabpfn_regressor_colab_b9c7d96_colab-cli-t4_activity_run_copy.ipynb` | `6b8f24937698670f14ada8ecaa0ebf524f960dc2e2865db5137467fd2235087a` | unchanged (no local path) |
+| `tabpfn_regressor_colab_b9c7d96_colab-cli-t4_activity_run_summary.json` | `0b6cdc2330bba235d6988dcbca26d5f7977a929e71d18ee4c1ef8952ff3264d8` | unchanged (no local path) |
 
 ### Local lock-only drives (not clean-runtime evidence)
 
@@ -316,7 +360,7 @@ report (`adaptation_deviation`) and accepted by the maintainer on 2026-10-10 (re
 
 ## Current status
 
-**Current status (2026-10-24): Candidate.** The companion is retired and folded into the E2E notebook's Section 10. The current E2E notebook blob is `d421385e` (regenerated from code commit `3a6a95c` on `fix/serve-safetensors`: the model is served from `tabpfn-v3-regressor-v3_default.safetensors`, converted once from the pinned checkpoint with `weights_only=True` and digest-pinned; it is stacked on `7bfee17`, whose guard refuses a pickle checkpoint load when torch is older than 2.6 or `TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD` is set, because tabpfn 8.1.0 loads `.ckpt` files with `weights_only=None`). At commit `091b58d` (the PR #31 head) its default path and, in a `RUN_ACTIVITY = True` run copy, its optional activity each ran once on a fresh hosted Colab T4 (2026-10-24, PASS, 14/14 code cells, 0 errors; served file `tabpfn-v3-regressor-v3_default.safetensors`, SHA-256 `edff9a12…332c`; the `091b58d` records under *Recorded executions*), so the runs of this PR cover the default path and the activity. The `712884e` records of the intermediate blob `62d09b0e` (`7bfee17`, PR #29), the `2e51561` records of blob `c6d534ad`, the `51a9090` records of blob `a28ab542` and the earlier records are history (REL14). The notebook stays **Candidate** until these two are recorded for the current blob:
+**Current status (2026-10-24): Candidate.** The companion is retired and folded into the E2E notebook's Section 10. The current E2E notebook blob is `c69447ee` (regenerated from code commit `9e2cad9` on `fix/bundle-safetensors`: artifact bundles are format v2 with `model.safetensors` and the export is bound to `CONVERTED_SHA256`; the external-artifact section still loads the v1 sample `sample-artifact-synthetic-v1` through the deprecated `weights_only=True` path, and its v2 re-issue `sample-artifact-synthetic-v2` (SHA-256 `827e55a960fabb495352859c04d1ab5f8ef098c574a84466bf148c60b1b7c7fb`) is staged, not published. Stacked on `3a6a95c` on `fix/serve-safetensors`: the model is served from `tabpfn-v3-regressor-v3_default.safetensors`, converted once from the pinned checkpoint with `weights_only=True` and digest-pinned; it is stacked on `7bfee17`, whose guard refuses a pickle checkpoint load when torch is older than 2.6 or `TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD` is set, because tabpfn 8.1.0 loads `.ckpt` files with `weights_only=None`). At commit `b9c7d96` (the PR #32 head) its default path and, in a `RUN_ACTIVITY = True` run copy, its optional activity each ran once on a fresh hosted Colab T4 (2026-10-24, PASS, 14/14 code cells, 0 errors; served file `tabpfn-v3-regressor-v3_default.safetensors`, SHA-256 `edff9a12…332c`; the run's export is a v2 bundle with `model.safetensors`; the `b9c7d96` records under *Recorded executions*), so the runs of this PR cover the default path and the activity. When this stack merges, the `091b58d` records of the intermediate blob `d421385e` (`3a6a95c`, PR #31) and the `712884e` records of the intermediate blob `62d09b0e` (`7bfee17`, PR #29) are history, as are the `2e51561` records of blob `c6d534ad`, the `51a9090` records of blob `a28ab542` and the earlier records (REL14). The notebook stays **Candidate** until these two are recorded for the current blob:
 
 - **REL12:** a BYOD run in which one representative input is accepted through the downstream stages and one incompatible input is refused;
 - **REL2:** a browser run of the interactive journeys (BYOD upload dialog, optional-activity toggle, own-artifact ZIP); the scripted CLI runs count for the default path and the activity only.
