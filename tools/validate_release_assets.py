@@ -109,10 +109,10 @@ NOTEBOOKS = {
             "manifest = pipe.save_artifact(art)",
             "zip_sha = P.zip_artifact_bundle(art, zip_path)",
             'manifest["featureKinds"]',
-            "if manifest[\"foundationCheckpointSha256\"] != P.WEIGHTS_SHA256:",
+            "if manifest[\"foundationCheckpointSha256\"] != P.CONVERTED_SHA256:",
             "shutil.rmtree(fresh_dir, ignore_errors=True)",
-            "checked = P.validate_artifact_bundle(fresh_dir, expected_checkpoint_sha256=P.WEIGHTS_SHA256)",
-            "fresh = P.TabPFNRegressorPipeline.from_artifact(fresh_dir, device=reference[\"device\"], expected_checkpoint_sha256=P.WEIGHTS_SHA256)",
+            "checked = P.validate_artifact_bundle(fresh_dir, pinned_base=True)",
+            "fresh = P.TabPFNRegressorPipeline.from_artifact(fresh_dir, device=reference[\"device\"], pinned_base=True)",
             "np.testing.assert_allclose(preds, expected, rtol=RELOAD_RTOL, atol=RELOAD_ATOL",
             '"maxAbsPredictionDifference": diff',
             "features = P.validate_new_rows(rows.drop(columns=passthrough), v[\"features\"], target_column=data[\"target\"])",
@@ -128,7 +128,7 @@ NOTEBOOKS = {
             'check_trusted_digest(part, expected, "the pinned SAMPLE_ARTIFACT_SHA256")',
             "members = check_members(P, zip_path)",
             "P.safe_extract_zip(zip_path, bundle)",
-            "artifact = P.validate_artifact_bundle(bundle, expected_fitted_sha256=expected_fitted, expected_checkpoint_sha256=P.WEIGHTS_SHA256)",
+            "artifact = P.validate_artifact_bundle(bundle, expected_fitted_sha256=expected_fitted, pinned_base=True)",
             "binding = check_base_model(P, manifest)",
             "check_data_contract(manifest, contract)",
             'serving = P.TabPFNRegressorPipeline.from_artifact(Path(art["bundle"])',
@@ -453,8 +453,11 @@ def validate_identity_consistency() -> None:
 WEIGHT_DOCS = ("README.md", "MODEL_CARD.md", "docs/WEIGHTS.md")
 EXTERNAL_WEIGHT_BYTES: dict[int, str] = {
     233_277_391: "untracked weights/model.ckpt, re-serialised local TabPFN-3 checkpoint copy",
+    233_186_068: "served safetensors conversion of the pinned checkpoint (pipeline.CONVERTED_BYTES)",
 }
-EXTERNAL_WEIGHT_DIGESTS: dict[str, str] = {}
+EXTERNAL_WEIGHT_DIGESTS: dict[str, str] = {
+    "edff9a12e3ccd8c0d3ad11f6fdf5b5fe14e36e5a23025049f3bd9f3e4c4e332c": "served safetensors conversion of the pinned checkpoint (pipeline.CONVERTED_SHA256)",
+}
 _DIGEST = re.compile(r"(?<![0-9a-fA-F])[0-9a-f]{64}(?![0-9a-fA-F])")
 _GROUPED = r"(\d{1,3}(?:[,\u202f\u00a0 ]\d{3})+|\d+)"
 _BYTE_COUNT = re.compile(r"(?<![\d,\-])" + _GROUPED + r"\s*bytes\b|totalBytes`?\s*" + _GROUPED)
