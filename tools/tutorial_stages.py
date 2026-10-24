@@ -62,6 +62,10 @@ SAMPLE_ARTIFACT_URL = "https://github.com/kurtvalcorza/tabpfn-regressor-pipeline
 SAMPLE_ARTIFACT_SHA256 = "7542b7210c54d051c186675a2cc4782eb490c6ae1f098728876403be3838d388"
 SAMPLE_ARTIFACT_BYTES = 217007493
 SAMPLE_ARTIFACT_FITTED_SHA256 = "7ae56895348d3a9d2381841020b3c5532c9ef730331df28274912370a9a78fd3"  # the run's printed EXPECTED_FITTED_SHA256
+# Trust note (ARTIFACT_SPEC SER9): model.tabpfn_fit is code-capable. from_artifact reloads it by unpickling its joblib
+# state (including torch storages, which torch rebuilds with torch.load(BytesIO, weights_only=False)), so it is
+# trusted only as far as the two digests above (the ZIP and the fitted archive) and the producer behind them. The weights
+# (model.safetensors) hold no code; tabpfn 8.1.0 has no non-pickle format for the fitted state.
 SAMPLE_ARTIFACT_PRODUCER = {
     "notebook": "tutorials/tabpfn_regressor_colab.ipynb (default path: the deterministic synthetic sample, seed 42)",
     "commit": "b32aa7c52400ae713a268ad808f9fc48d313719f",
