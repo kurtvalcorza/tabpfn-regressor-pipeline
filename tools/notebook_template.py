@@ -46,7 +46,7 @@ ENVIRONMENT = {
     "package": "tabpfn_regressor_pipeline",
     "repo_name": REPO,
     "weights_key": "tabpfn-3-regressor",
-    "modules": ["__init__.py", "pipeline.py"],
+    "modules": ["__init__.py", "pipeline.py", "safetensors_weights.py"],
     "entry_module": "pipeline.py",
     "lock": "tutorials/requirements-colab.lock.txt",
     "managed_python": "3.12.12",
@@ -121,7 +121,7 @@ TEMPLATE = {
     "prerequisites": [
         RUNTIME_PREREQ,
         "- **Knowledge:** basic Python and pandas, the train/val/test convention, and how to read a printed dictionary. The metrics and in-context learning are explained where they are first used, and the glossary collects them.",
-        "- **Model file:** `tabpfn-v3-regressor-v3_default.ckpt` (222 MiB) plus the licence, README and config of the snapshot, staged at a fixed revision and digest-verified in Section 3.",
+        "- **Model file:** `tabpfn-v3-regressor-v3_default.ckpt` (222 MiB) plus the licence, README and config of the snapshot, staged at a fixed revision and digest-verified in Section 3, then converted once (read with `weights_only=True`) to `tabpfn-v3-regressor-v3_default.safetensors`, whose pinned digest is checked. The model is served from the safetensors file; the `.ckpt` is kept only because the artifact's `model.ckpt` is a byte copy of it.",
         "- **Data:** the default path draws a deterministic synthetic regression table (600 rows: numeric `x1`, `x2`, a three-level `category`, and a target that is linear in them plus noise; `train.csv`/`val.csv`/`test.csv`) in code and needs no download and no private data. BYOD (one labelled ZIP, `train.csv` or directory) is off by default. Do not upload confidential or restricted data to a hosted notebook environment unless you are authorized to do so. Uploaded inputs remain in the notebook runtime; this pipeline does not send them to a third-party inference API.",
         LICENCE_PREREQ,
     ],
