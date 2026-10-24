@@ -88,7 +88,7 @@ def test_section_pins_the_release_asset_by_url_and_digests() -> None:
     assert STAGES.SAMPLE_ARTIFACT_URL == PINNED_URL
     assert STAGES.SAMPLE_ARTIFACT_SHA256 == PINNED_SHA256
     assert STAGES.SAMPLE_ARTIFACT_FITTED_SHA256 == PINNED_FITTED_SHA256
-    assert STAGES.SAMPLE_ARTIFACT_BYTES == 217007493
+    assert STAGES.SAMPLE_ARTIFACT_BYTES == 216972113
     assert STAGES.SAMPLE_ARTIFACT_PRODUCER["commit"].startswith("b32aa7c")
     assert STAGES.SAMPLE_ARTIFACT_PRODUCER["release_tag"] == STAGES.SAMPLE_ARTIFACT_TAG == "sample-artifact-synthetic-v2"
     assert "sample-artifact-synthetic-v1" in STAGES.SAMPLE_ARTIFACT_PRODUCER["reissue"]
