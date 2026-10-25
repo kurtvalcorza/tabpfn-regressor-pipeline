@@ -96,12 +96,12 @@ One generated notebook under `tutorials/` demonstrates the pipeline **without th
 `tools/notebook_template.py`, it carries
 `src/tabpfn_regressor_pipeline/pipeline.py` verbatim, the 4-file snapshot manifest of the pinned
 `Prior-Labs/tabpfn_3` checkpoint (`tabpfn-v3-regressor-v3_default.ckpt` at immutable revision
-`24a16a89d245878b846555110985634aa2e656d7`, see `docs/WEIGHTS.md`) and the `pyproject.toml` runtime pins inline, so the
+`24a16a89d245878b846555110985634aa2e656d7`, served from its pinned safetensors conversion, see `docs/WEIGHTS.md`) and the `pyproject.toml` runtime pins inline, so the
 exported `.ipynb` needs no clone, no package install, no token and no access to this repository.
 
 | Notebook | Profile | What it does |
 |---|---|---|
-| `tabpfn_regressor_colab.ipynb` | `E2E` | synthetic or BYOD table → `validate_inputs` (coded findings, identifiers kept out of the features) → **in-context** fit on the pinned checkpoint (no gradient update; an accepted RUN7 deviation) → `mae`, `rmse`, `r2` (`mape` only when no target is near zero) vs the training-mean baseline and a linear-regression reference → `evaluation_report` → artifact bundle → fresh-process reload (predictions on every validation row equal within `rtol=1e-5`, `atol=1e-6`) → new-row scoring with identifiers kept → exports → **external-artifact section** (Section 10, NOTEBOOK_SPEC 3.0 §19.1): the pinned release asset `sample-artifact-synthetic-v1`, exported by a recorded earlier run, verified by SHA-256 before extraction, checked against the default data contract, rebuilt with `from_artifact` and used to score eight synthetic test rows into `outputs/external_artifact/` |
+| `tabpfn_regressor_colab.ipynb` | `E2E` | synthetic or BYOD table → `validate_inputs` (coded findings, identifiers kept out of the features) → **in-context** fit on the pinned checkpoint (no gradient update; an accepted RUN7 deviation) → `mae`, `rmse`, `r2` (`mape` only when no target is near zero) vs the training-mean baseline and a linear-regression reference → `evaluation_report` → artifact bundle → fresh-process reload (predictions on every validation row equal within `rtol=1e-5`, `atol=1e-6`) → new-row scoring with identifiers kept → exports → **external-artifact section** (Section 10, NOTEBOOK_SPEC 3.0 §19.1): the pinned release asset `sample-artifact-synthetic-v2` (the bundle-format v2 re-issue of `sample-artifact-synthetic-v1`, exported by a recorded earlier run), verified by SHA-256 before extraction, checked against the default data contract, rebuilt with `from_artifact` and used to score eight synthetic test rows into `outputs/external_artifact/` |
 
 NOTEBOOK_SPEC 3.0 retired the separate `ARTIFACT-INFERENCE` companion notebook (KND11); its capability is the
 external-artifact section above, and its script-built sample bundle (`sample-bundle-v1`) is no longer used.
@@ -119,7 +119,7 @@ frames = read_dataset_zip(build_synthetic_dataset("synthetic.zip"))
 manifest = validate_inputs(frames["train.csv"], "target", val=frames["val.csv"])  # raises InputRejected
 pipe.fit(X_train, y_train, target_column="target")           # in-context: no gradient update
 metrics = pipe.evaluate(X_val, y_val)
-pipe.save_artifact("artifact")                               # model.tabpfn_fit + model.ckpt + artifact_manifest.json
+pipe.save_artifact("artifact")                               # model.tabpfn_fit + model.safetensors + artifact_manifest.json (bundle format v2)
 fresh = TabPFNRegressorPipeline.from_artifact("artifact")            # validates the bundle, then reloads
 ```
 
@@ -128,11 +128,10 @@ Static gates (also run by CI): `ruff check .`, `pytest -m "not integration"`, `p
 
 ## Release status
 
-**Candidate — the current E2E blob `c6d534ad` (regenerated from `daafb45`, which shows a refused user input as one `Refused:` line;
-DAT19/DAT20) has its default path and its optional activity recorded by hosted Colab T4 runs at `2e51561` (2026-10-23, PASS,
-14/14 code cells, 0 errors each). The runs at `51a9090` (2026-10-22, PASS) cover the previous blob `a28ab542` and are history
-(REL14). Pending only a BYOD run (one input accepted, one refused; REL12) and a browser run of the interactive journeys (REL2)
-before promotion** (`STATUS.md`). The
+**Candidate — the current E2E blob `a096dae5` (PR #33: the external-artifact section's default is the v2 release `sample-artifact-synthetic-v2`, `827e55a9…`) ran its default path and, in a `RUN_ACTIVITY = True` run copy, the optional activity on fresh hosted Colab T4 sessions at `43ec044` (2026-10-24, PASS, 14/14 code cells each); Section 10 verified the v2 asset and loaded it with no v1 `DeprecationWarning`. It stays Candidate until REL12 and REL2 are recorded. The runs of the previous blob are history (REL14): the E2E blob `c69447ee` (regenerated from `9e2cad9`: bundle format v2 with `model.safetensors`, see `DIMER_CONTRACT.md`; stacked on `3a6a95c`, which serves the model from the pinned safetensors conversion of the checkpoint; the guard of `7bfee17` against a pickle load without `weights_only` stays) ran its default path and, in a `RUN_ACTIVITY = True` run copy, the optional activity on fresh hosted Colab T4 sessions at `b9c7d96` (2026-10-24, PASS, 14/14 code cells each). The runs at
+`091b58d` of blob `d421385e`, at `712884e` of blob `62d09b0e`, at `2e51561` of blob `c6d534ad` and at `51a9090` of blob `a28ab542` are history (REL14). A
+BYOD run (one input accepted, one refused; REL12) and a
+browser run of the interactive journeys (REL2) are required before promotion** (`STATUS.md`). The
 standalone notebook passes static validation and the generator parity checks; its clean-runtime runs are recorded — and
 gate promotion — in `docs/release-verification.md`.
 
@@ -329,7 +328,7 @@ A successful run materializes the DIMER artifact layout under the run's output d
 /data/fine-tuning/<run_id>/
 ├── artifacts/
 │   ├── model.tabpfn_fit          fitted estimator state (foundation weights intentionally omitted)
-│   ├── model.ckpt                companion foundation checkpoint (recombined by the loader)
+│   ├── model.safetensors         companion weights, bundle format v2 (recombined by the loader; no pickle)
 │   └── artifact_manifest.json    SHA-256 of the fitted state + checkpoint
 ├── evaluation/report.json        validation / optional test metrics
 ├── logs/run-summary.json         run parameters and provenance summary
@@ -352,8 +351,9 @@ A successful run materializes the DIMER artifact layout under the run's output d
     "test": { "mae": 0.2685, "rmse": 0.3468, "r2": 0.9950 }
   },
   "artifacts": {
-    "modelArtifact":       { "path": "fine-tuning/<run_id>/artifacts/model.tabpfn_fit", "name": "model.tabpfn_fit", "contentType": "application/octet-stream", "sizeBytes": 75221 },
-    "foundationCheckpoint":{ "path": "fine-tuning/<run_id>/artifacts/model.ckpt",        "name": "model.ckpt",        "contentType": "application/octet-stream", "sizeBytes": 233304651 },
+    "modelArtifact":       { "path": "fine-tuning/<run_id>/artifacts/model.tabpfn_fit", "name": "model.tabpfn_fit", "contentType": "application/octet-stream", "sizeBytes": N, "sha256": "…" },
+    "modelWeights":        { "path": "fine-tuning/<run_id>/artifacts/model.safetensors", "name": "model.safetensors", "contentType": "application/octet-stream", "sizeBytes": N, "sha256": "…" },
+    "foundationCheckpoint":{ "path": "fine-tuning/<run_id>/artifacts/model.safetensors", "name": "model.safetensors", "contentType": "application/octet-stream", "sizeBytes": N },
     "evaluationReport":    { "path": "fine-tuning/<run_id>/evaluation/report.json",      "name": "report.json",       "contentType": "application/json" },
     "logArtifact":         { "path": "fine-tuning/<run_id>/logs/run-summary.json",       "name": "run-summary.json",  "contentType": "application/json" },
     "manifest":            { "path": "fine-tuning/<run_id>/artifacts/artifact_manifest.json", "name": "artifact_manifest.json", "contentType": "application/json" },
@@ -384,9 +384,10 @@ that cannot be reloaded. On failure the same envelope is written with `successfu
 ### Serving loader
 
 TabPFN's `.tabpfn_fit` archive intentionally omits the foundation weights; the companion
-`model.ckpt` sits beside it under `artifacts/`. [`serving/load_artifact.py`](serving/load_artifact.py)
+`model.safetensors` (bundle format v2, `DIMER_CONTRACT.md`) sits beside it under `artifacts/`. [`serving/load_artifact.py`](serving/load_artifact.py)
 (`load_dimer_tabpfn_regressor_artifact`) is directory-parameterized: it rewrites the fitted
-archive's recorded `model_path` to the colocated `model.ckpt` after DIMER relocates the artifact,
+archive's recorded `model_path` to the colocated `model.safetensors` after DIMER relocates the artifact (a v1
+`model.ckpt` is first read with `weights_only=True` into a temporary safetensors file, with a deprecation warning),
 then loads the estimator. DIMER serving must use this loader (or equivalent logic).
 
 ### GPU burst (S3) mode
