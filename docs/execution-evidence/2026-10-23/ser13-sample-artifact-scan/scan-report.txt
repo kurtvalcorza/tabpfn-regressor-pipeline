@@ -1,0 +1,103 @@
+asset=tabpfn_regressor_artifact.zip
+sha256=7542b7210c54d051c186675a2cc4782eb490c6ae1f098728876403be3838d388
+tools: picklescan 1.0.5, joblib 1.6.0, numpy 2.5.4, python 3.13.16
+-- tabpfn_regressor_artifact.zip [archive] EXTRACTED
+   3 members queued
+-- model.tabpfn_fit [archive] EXTRACTED
+   3 members queued
+-- model.ckpt [pytorch-zip] EXTRACTED
+   510 members queued
+-- model.tabpfn_fit!/fitted_attrs.joblib [joblib] CLEAN
+   method: picklescan 1.0.5 (bytes); restricted load (joblib 1.6.0, numpy 2.5.4)
+   suspicious builtins.slice
+   innocuous  collections.OrderedDict
+   suspicious joblib.numpy_pickle.NumpyArrayWrapper
+   innocuous  numpy.dtype
+   suspicious numpy.float64
+   innocuous  numpy.ndarray
+   innocuous  numpy._core.multiarray._reconstruct
+   suspicious numpy._core.multiarray.scalar
+   suspicious sklearn.compose._column_transformer.ColumnTransformer
+   suspicious sklearn.compose._column_transformer.make_column_selector
+   suspicious sklearn.pipeline.Pipeline
+   suspicious sklearn.preprocessing._data.StandardScaler
+   suspicious sklearn.preprocessing._encoders.OrdinalEncoder
+   suspicious sklearn.preprocessing._function_transformer.FunctionTransformer
+   suspicious tabpfn.architectures.shared.bar_distribution.FullSupportBarDistribution
+   suspicious tabpfn.inference_config.InferenceConfig
+   suspicious tabpfn.preprocessing.configs.PreprocessorConfig
+   suspicious tabpfn.preprocessing.configs.RegressorEnsembleConfig
+   suspicious tabpfn.preprocessing.datamodel.Feature
+   suspicious tabpfn.preprocessing.datamodel.FeatureModality
+   suspicious tabpfn.preprocessing.datamodel.FeatureSchema
+   suspicious tabpfn.preprocessing.datamodel.GPUTransformType
+   suspicious tabpfn.preprocessing.ensemble.TabPFNEnsemblePreprocessor
+   suspicious tabpfn.preprocessing.pipeline_interface.PreprocessingPipeline
+   suspicious tabpfn.preprocessing.steps.encode_categorical_features_step.EncodeCategoricalFeaturesStep
+   suspicious tabpfn.preprocessing.steps.preprocessing_helpers.OrderPreservingColumnTransformer
+   suspicious tabpfn.preprocessing.steps.remove_constant_features_step.RemoveConstantFeaturesStep
+   suspicious tabpfn.preprocessing.steps.reshape_feature_distribution_step.ReshapeFeatureDistributionsStep
+   suspicious tabpfn.preprocessing.steps.safe_power_transformer.SafePowerTransformer
+   suspicious tabpfn.preprocessing.steps.utils._NoInverseImputer
+   suspicious tabpfn.preprocessing.steps.utils._identity
+   suspicious tabpfn.preprocessing.steps.utils._replace_inf_with_nan
+   innocuous  torch._utils._rebuild_tensor_v2
+   suspicious torch.storage._load_from_bytes
+-- model.tabpfn_fit!/executor_state.joblib [joblib] CLEAN
+   method: picklescan 1.0.5 (bytes); restricted load (joblib 1.6.0, numpy 2.5.4)
+   suspicious builtins.slice
+   suspicious joblib.numpy_pickle.NumpyArrayWrapper
+   innocuous  numpy.dtype
+   suspicious numpy.float64
+   innocuous  numpy.ndarray
+   suspicious numpy._core.multiarray.scalar
+   suspicious sklearn.compose._column_transformer.ColumnTransformer
+   suspicious sklearn.pipeline.Pipeline
+   suspicious sklearn.preprocessing._data.StandardScaler
+   suspicious sklearn.preprocessing._encoders.OrdinalEncoder
+   suspicious sklearn.preprocessing._function_transformer.FunctionTransformer
+   suspicious tabpfn.inference.InferenceEngineCachePreprocessing
+   suspicious tabpfn.preprocessing.configs.PreprocessorConfig
+   suspicious tabpfn.preprocessing.configs.RegressorEnsembleConfig
+   suspicious tabpfn.preprocessing.datamodel.Feature
+   suspicious tabpfn.preprocessing.datamodel.FeatureModality
+   suspicious tabpfn.preprocessing.datamodel.FeatureSchema
+   suspicious tabpfn.preprocessing.datamodel.GPUTransformType
+   suspicious tabpfn.preprocessing.ensemble.TabPFNEnsembleMember
+   suspicious tabpfn.preprocessing.ensemble.TabPFNEnsemblePreprocessor
+   suspicious tabpfn.preprocessing.pipeline_interface.PreprocessingPipeline
+   suspicious tabpfn.preprocessing.steps.encode_categorical_features_step.EncodeCategoricalFeaturesStep
+   suspicious tabpfn.preprocessing.steps.remove_constant_features_step.RemoveConstantFeaturesStep
+   suspicious tabpfn.preprocessing.steps.reshape_feature_distribution_step.ReshapeFeatureDistributionsStep
+   suspicious tabpfn.preprocessing.steps.safe_power_transformer.SafePowerTransformer
+   suspicious tabpfn.preprocessing.steps.utils._NoInverseImputer
+   suspicious tabpfn.preprocessing.steps.utils._identity
+   suspicious tabpfn.preprocessing.steps.utils._replace_inf_with_nan
+   suspicious tabpfn.preprocessing.torch.pipeline_interface.TorchPreprocessingPipeline
+   suspicious tabpfn.preprocessing.torch.steps.TorchAddFingerprintFeaturesStep
+   suspicious tabpfn.preprocessing.torch.steps.TorchAddSVDFeaturesStep
+   suspicious tabpfn.preprocessing.torch.steps.TorchSelectiveQuantileTransformerStep
+   suspicious tabpfn.preprocessing.torch.steps.TorchSelectiveSquashingScalerStep
+   suspicious tabpfn.preprocessing.torch.steps.TorchShuffleFeaturesStep
+   suspicious tabpfn.preprocessing.torch.torch_quantile_transformer.TorchQuantileTransformer
+   suspicious tabpfn.preprocessing.torch.torch_squashing_scaler.TorchSquashingScaler
+   suspicious tabpfn.preprocessing.torch.torch_svd.TorchSafeStandardScaler
+-- model.ckpt!/archive/data.pkl [pickle] CLEAN
+   method: picklescan 1.0.5 (bytes); restricted load (joblib 1.6.0, numpy 2.5.4)
+   innocuous  collections.OrderedDict
+   innocuous  torch.FloatStorage
+   innocuous  torch._utils._rebuild_tensor_v2
+-- <nested>/nested-b73df5121b9984f6.pt [legacy-torch] CLEAN
+   method: picklescan 1.0.5 (bytes); restricted load (joblib 1.6.0, numpy 2.5.4)
+   innocuous  torch.FloatStorage
+-- <nested>/nested-bdf1894ffabd7de6.pt [legacy-torch] CLEAN
+   method: picklescan 1.0.5 (bytes); restricted load (joblib 1.6.0, numpy 2.5.4)
+   innocuous  torch.FloatStorage
+-- <nested>/nested-6aa4ff6ae2f88f38.pt [legacy-torch] CLEAN
+   method: picklescan 1.0.5 (bytes); restricted load (joblib 1.6.0, numpy 2.5.4)
+   innocuous  torch.FloatStorage
+-- <nested>/nested-d6679d7524d6e063.pt [legacy-torch] CLEAN
+   method: picklescan 1.0.5 (bytes); restricted load (joblib 1.6.0, numpy 2.5.4)
+   innocuous  torch.FloatStorage
+summary: 7 pickle files; clean=7 dangerous=0 incomplete=0
+scan_status=0
